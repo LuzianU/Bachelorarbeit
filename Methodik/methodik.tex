@@ -8,10 +8,10 @@ Ziel des ersten Teils ist die Extraktion der Diagrammen aus den historischen Tex
 Die Wesentlichen Schritte des Extraktionsteils beinhalten die Objekterkennung, also die Bestimmung des Begrenzungsrechtecks (bounding box) der Diagrammen innerhalb den vorliegenden Vollseitscans und deren Unterscheidung in verschiedene Diagrammtypen, beispielsweise Linien- und Balkendiagrammen.
 Die erkannten Liniendiagramme werden anschließend anhand ihrer Auswertungsschwierigkeit klassifiziert, etwa durch Kennzeichnung deren Diagrammen, welche kontextbedingt gruppiert wurden, zum Beispiel aufgrund gemeinsamer Graphsachsen.
 
-\subsection{Erkennung von Diagrammen in Texten}
+% \subsection{Erkennung von Diagrammen in Texten}
 Um mit Hilfe von Deep-Learning Modelle zu trainieren, werden annotierte Grundwahrheiten (ground truth) benötigt.
 
-\subsection*{DocBank Datensatz}
+\subsection{Datensatz DocBank zur Objekterkennung}
 
 Für die Erkennung von Diagrammen in Texten wurden DocBank \cite{li2020docbank} und ein Anteil der historischen Wirtschaftsscans verwendet. DocBank besteht aus wissenschaftliche Publikation mit computergenerierten Grafiken zusammengesetzt, weshalb DocBanks Dokumentenseiten lediglich zum Vortrainieren des Detektionsmodells gedacht sind. Beabsichtigt wurde dieser Prozess des Vortrainierens um das System schneller und algemeingültiger, also mit besseren Voraussagen, trainieren zu können. Spätere Experimente untersuchen diese Annahme.
 \\
@@ -29,22 +29,71 @@ Für die manuell GT-Annotation der DocBank Dokumentenseiten, sowie folgender and
     \label{fig:docbank_example}
 \end{figure}
 
-Da der Datensatz aus einer beträchtlich diversen Menge verschiedener wissenschaftlichen Publikationen besteht, beinhalten diese auch zahlreich verschiedene Diagrammlayouts. Um eine bestmögliche Konsitenz und Nützlichkeit in der Handannotation zu gewährleisten wurden einige Überlegungen gemacht: Da einige Abbildungen als Gruppe von Diagrammen fungieren (siehe Abbildung \ref{fig:docbank_example}) muss die generelle Entscheidung getroffen werden, jedes Diagramm der Gruppe einzeln zu annotieren oder lediglich die gesamte Gruppe zusammen. Beide Möglichkeiten liefern Vor- und Nachteile; beim getrennten Annotieren muss die Gruppe in einem späteren Schritt nicht mehr in die einzelnen Diagramme aufgeteilt werden, jedoch können auch kontextbedingte Informationen verloren gehen, wie in dem abgebildeten Beispiel die Y-Achsenbeschreibung des mittleren Diagramms (B), welches sich eine gemeinsame Y-Achsenbeschriftung mit dem linken Diagram (A) teilt.
+Da der Datensatz aus einer beträchtlich diversen Menge verschiedener wissenschaftlichen Publikationen besteht, beinhalten diese auch zahlreich verschiedene Diagrammlayouts. Um eine bestmögliche Konsitenz und Nützlichkeit in der Handannotation zu gewährleisten wurden einige Überlegungen gemacht: Da einige Abbildungen als Gruppe von Diagrammen fungieren, siehe Abbildung \ref{fig:docbank_example}, muss die generelle Entscheidung getroffen werden, jedes Diagramm der Gruppe einzeln zu annotieren oder lediglich die gesamte Gruppe zusammen. Beide Möglichkeiten liefern Vor- und Nachteile; beim getrennten Annotieren muss die Gruppe in einem späteren Schritt nicht mehr in die einzelnen Diagramme aufgeteilt werden, jedoch können auch kontextbedingte Informationen verloren gehen, wie in dem abgebildeten Beispiel die Y-Achsenbeschreibung des mittleren Diagramms (B), welches sich eine gemeinsame Y-Achsenbeschriftung mit dem linken Diagram (A) teilt.
 Ebenfalls können Diagrammgruppen aus verschiedenen Diagrammtypen bestehen, etwa Histogramme und Liniendiagramme beieinander, weswegen dementsprechend für genau diesen Fall die gemischte Diagrammklasse eingeführt wurde. Bei weiteren Unklarheiten des Gruppenumfangs wurde sich sonst immer an die darunterliegenden Abbildungsunterschrift gehalten.
 \\
 Insgesamt wurden 321 Seiten annotiert, beinhaltend aus 105 Liniendiagrammen, 115 Balkendiagrammen (vereinigt mit Histogrammen), 79 sonstige und 66 gemischte Diagrammen.
 
+\subsection{Datensatz historischer Wirtschaftsscans zur Objekterkennung}
 
 \begin{wrapfigure}{r}{0.25\textwidth}
-    % \vspace{-\intextsep} % Remove vertical space above the figure
+    \vspace{-\intextsep} % Remove vertical space above the figure
     \centering
     \includegraphics[width=\linewidth]{Methodik/img/scanbank_example.png}
     \caption{\hbadness=10000 Diagrammbeispiel historischer Scans}
     \label{fig:scanbank_example}
 \end{wrapfigure}
-\subsection*{Datensatz historischer Wirtschaftsscans}
-Die Scans der geschichtlichen Wirtschaftsmagazine wurden mit ähnlichen Überlegungen annotiert. Hier befinden sich ebenfalls Diagrammgruppen, teils auch mit mehreren verschiedenen Diagrammtypen, welche alle wieder als gesamte Gruppe annotiert wurden. Bis auf sehr wenigen Ausnahmen, befinden sich alle Abbildungen in den Scans visuell eingerahmt. Da die Ausrichtung derer jedoch nie wirklich perfekt gerade dargestellt wurde, und somit, der Ausrichtung verschuldet, kein Annotationsrechteck mit ausgeschlossenem Abbildungsrahmen gezeichnet werden kann wurde die Entscheidung getroffen, jede Annotation mit allen Ecken der Diagrammrahmen zu beinhalten.
 
-\newpage
+Die Scans der geschichtlichen Wirtschaftsmagazine wurden mit ähnlichen Überlegungen annotiert. Hier befinden sich ebenfalls Diagrammgruppen, teils auch mit mehreren verschiedenen Diagrammtypen, siehe Abbildung \ref{fig:scanbank_example}, welche alle wieder als gesamte Gruppe annotiert wurden. Bis auf sehr wenigen Ausnahmen, befinden sich alle Abbildungen in den Scans visuell eingerahmt. Da die Ausrichtung derer jedoch nie wirklich perfekt gerade dargestellt wurde, und somit, der Ausrichtung verschuldet, kein Annotationsrechteck mit ausgeschlossenem Abbildungsrahmen gezeichnet werden kann wurde die Entscheidung getroffen, jede Annotation mit allen Ecken der Diagrammrahmen zu beinhalten. Grunsätzlich wurden alle Abbildungen, Diagramme oder nicht, wie etwa vereinzelte Karikaturen oder Landedskarten mit in die Klasse der sonstigen Diagramme eingeschlossen um so die allgemeine Erkennung von seltenen Diagrammtypen zu verstärken.
+Es wurden insgesamt 2391 zufällige Seiten ausgewählt und manuell annotiert, woraus sich 343 Liniendiagramme, 102 Balkendiagramme, 77 sonstige und 52 gemischte Diagramme ergebten.
+
+\clearpage
 \section{Schwierigkeitsklassifizierung von Liniendiagrammen}
-asd
+
+Aufgrund der überwiegenden Liniendiagrammen in den historischer Wirtschaftsscans, wurde sich im Folgenden primär auf die Auswertung der Liniendiagrammen fokusiert.
+\\
+Für genau diese Auswertung wurde der Vorverarbeitungsschritt überlegt, die extrahierten Liniendiagramme in verschiedene Untergruppen zu unterteilen. Es wurden vier Klassifikationen gewählt; Liniendiagramme mit nur einer Wertelinie, aus zusammengesetzten Diagrammen, also Liniendiagrammsgruppen, sich nicht überlappenden Wertelinien und sich überlappenden Wertelinien.
+
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.475\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/linebank_single.png}
+        \caption{\hbadness=10000 Liniendiagramm mit einer Wertelinie}
+        \label{fig:linebank_single}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.475\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/linebank_composite.png}
+        \caption{\hbadness=10000 Zusammengesetzte Liniendiagrammsgruppe}
+        \label{fig:linebank_composite}
+    \end{minipage}
+
+    \vspace{0.75em}
+
+    \begin{minipage}{0.475\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/linebank_non_overlapping.png}
+        \caption{\hbadness=10000 Liniendiagramm mit sich nicht überlappenden Wertelinie}
+        \label{fig:linebank_non_overlapping}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.475\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/linebank_overlapping.png}
+        \caption{\hbadness=10000 Liniendiagramm mit sich überlappenden Wertelinie}
+        \label{fig:linebank_overlapping}
+    \end{minipage}
+\end{figure}
+Es existieren nämlich Liniendiagrammsgruppen mit mehreren eigenständigen Unterdiagrammen, welche möglicherweise jeweils ihre eigene Achsenbeschreibung haben, oder auch sich kontextbedingt diese Achsenbeschriftungen teilen. Diese müssen also im Vergleich zu einfachen Liniendiagrammen speziell behandelt werden. Aber auch wenn für Liniendiagramme mit nur einer oder sich nicht überschneidenden Wertelinien ein eher primitiver Extraktionsalgorithmus ausreichen würde, tritt bei komplexeren, sich überlappenden oder überschneidenden Wertelinien schnell das Problem der Linientrennung bzw. Liniengruppierung auf.
+
+\clearpage
+
+\section{Auswertung von Liniendiagrammen}
+
+Für die Auswertung der historischen Liniendiagramme wurden Überlegungen gemacht, Beschriftungen und vorallem das Hintergrundgitter, welches sich in jedem Diagramm zu finden lässt, zu entfernen, jedoch wurde schnell klar, dass diese primitive Herangehensweise grundsätzlich eher impraktibel ist. Zum einen führen die nicht genau senkrecht und waagerecht verlaufenden Gitterlinien die korrekte Erkennung dieser zu einem nichttrivialem Erkennungsproblem und zum andern überlappen und verlaufen viele Wertelinien auf dem Gitter, sodass die einfache Entfernung der Gitterlinienpixel das Diagramm mit unzähligen Lücken verbleiben lässt. Dementsprechend wurde beschlossen, statt aus dem Diagramm alles bis auf die Wertelinien zu entfernen, die Wertelinien selbst zu extrahieren, also sie durch Segmentation vom Hintergrundgitter und allen anderen Elementen zu trennen.
+\\
+Die manuelle Erstellung der Grundwahrheiten für die Werteliniensegmentation ist allerdings recht arbeitsaufwendig, weswegen zusätzlich ein synthetisch erstellter Datensatz generiert wurde, bei dem die Erstellung von Binärmasken der Wertelinien trivial ausfällt.
+
+\subsection{Datensatz von synthetischen Liniendiagrammen zur Segmentation}
+
+\subsection{Datensatz von historischen Liniendiagrammen zur Segmentation}
