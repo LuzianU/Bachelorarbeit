@@ -96,4 +96,38 @@ Die manuelle Erstellung der Grundwahrheiten für die Werteliniensegmentation ist
 
 \subsection{Datensatz von synthetischen Liniendiagrammen zur Segmentation}
 
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.475\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/lines_synthetic.png}
+        \caption{\hbadness=10000 Synthetisch erstelltes Liniendiagramm}
+        \label{fig:lines_synthetic}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.475\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/lines_synthetic_mask.png}
+        \caption{\hbadness=10000 Zugehörige generierte Binärmaske der Wertelinien}
+        \label{fig:lines_synthetic_mask}
+    \end{minipage}
+\end{figure}
+
+Der synthetische Datensatz besteht aus 2000 verschiedenen, zufällig generierten Liniendiagrammen. Diese beinhalten zufällige Wertelinien und Gitterlinien, sowohl in Position als auch in Liniendicke und zufällige, teils den Wertelinien überlappenden, Textbeschriftungen vielfältiger Schrifgrößen und Schriftarten. Nachbearbeitet wurden sie mit unterschiedlichem Bildrauschen, um so näher an die Scanqualität und Diversität der historischen Diagramme heranzukommen.
+
 \subsection{Datensatz von historischen Liniendiagrammen zur Segmentation}
+
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.475\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/lines_historical.png}
+        \caption{\hbadness=10000 Historisches Liniendiagramm \phantom{Platzhalter}}
+        \label{fig:lines_historical}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.475\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Methodik/img/lines_historical_mask.png}
+        \caption{\hbadness=10000 Zugehörige manuell erstellte Binärmaske der Wertelinien}
+        \label{fig:lines_historical_mask}
+    \end{minipage}
+\end{figure}
