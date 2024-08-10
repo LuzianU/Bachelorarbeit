@@ -1,0 +1,66 @@
+\documentclass{thesis}
+\input{preamble}
+% for german language type 'ngernman' as option for babel package in in preamble.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PDF SETTINGS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hypersetup{
+ pdfauthor={Luzian Uihlein},
+ pdftitle={Extraktion von Diagrammen aus Texten und Auswertung von Liniendiagrammen mit Deep-Learning Methoden},
+ pdfsubject={Not set},
+ pdfkeywords={Not set}
+}
+\hypersetup{hidelinks} % hides boxes around hyperlinks uncomment this with ctrl+shift+7
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEGIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+\include{titlepage}
+\include{abstract}
+
+\renewcommand{\baselinestretch}{1} % decrease line spacing
+\tableofcontents
+\renewcommand{\baselinestretch}{1.2}
+
+\normalsize
+
+\include{chapter1/chapter}
+\include{chapter2/chapter}
+\include{Literaturübersicht/literaturübersicht}
+\include{Methodik/methodik}
+\include{summary}
+\include{originality}
+
+\appendix
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+
+%table of figures
+%\clearpage
+%\listoffigures
+%\clearpage
+
+%empty page 
+% \thispagestyle{empty}
+% \cleardoublepage
+
+\phantom{
+    \cite{P2023LineEXDE}
+    \cite{lee2023matgdmaterialsgraphdigitizer}
+    \cite{inproceedings}
+    \cite{9423395}
+    \cite{parsingimages}
+    \cite{li2020docbank}
+    \cite{CVAT_ai_Corporation_Computer_Vision_Annotation_2023}
+}
+
+\end{document}
+
