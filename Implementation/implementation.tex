@@ -1,2 +1,84 @@
 \chapter{Implementation}
 \label{ch:implementation}
+
+Die Implementation der verschiedenen Deep-Learning Bilderkennungsmethoden erfolgte durch die Verwendung des Ultralytics YOLO \cite{Jocher_Ultralytics_YOLO_2023} Frameworks und der Eigenimplementation der U-Net \cite{ronneberger2015unetconvolutionalnetworksbiomedical} Architektur.
+
+\section{Ultralytics YOLO}
+Für die Extraktion von Diagrammen aus Texten, Schwierigkeitsklassifizierung von Liniendiagrammen und Instanzsegmentation der Wertelinien wurde das Ultralytics YOLO Framework verwendet. Es basiert auf dem YOLO (You Only Look Once) Modell, welches erstmal 2015 \cite{redmon2016lookonceunifiedrealtime} veröffentlicht wurde, und seit dem zehn Versionsiterationen durchlief. Unterstützt werden verschiedene Bild- und Videoerkennungsaufgaben, wie die Erkennung (detection), Segmentierung (segmentation), Posenschätzung (pose detection), Verfolgung (tracking) und Klassifizierung (classification). Das Ultralytics YOLO Framework ist anfängerfreundlich, die Verwendung erfolgt einfach, verfügt man bereits über einen annotierten Datensatz, dann kann mit lediglich einem Konsolenbefehl der Trainingsprozess des eigenen Modells gestartet werden. Ebenfalls verfügt es über der automatischen Datenagumentation während des Trainingsvorgangs und der Evaluation verschiedener Metriken des trainierenden und trainierten Modells.
+\\
+Die verwendeten Metriken bei der Objekterkennung fassen sich aus Präzision (precision), Erinnerung (recall), mAP50 und mAP50-95 zusammen. Zum berechnen dieser wird das Aufkommen der Richtig Positiven (TP), Falsch Positiven (FP) und Falsch Negativen (FN) Vorhersagen (predictions) des Modells benutzt. Die Kategorie TP zeigt vom Modell richtig erkannte Objekte, welche tatsächlich vorhanden sind, FP bestimmt die falsche Erkennung des Modells von Objekten die in Wirklichkeit nicht vorhanden sind und FN gibt Auskunft über Objekte die in der Realität vorhanden sind, das Modell sie allerdings nicht erkannt hat.
+\\
+Precision misst den Anteil der korrekten positiven Vorhersagen an allen positiven Vorhersagen des Modells. Sie zeigt, wie genau das Modell bei der Erkennung von Objekten ist und wie gut es falsche positive Ergebnisse vermeidet. Ein hoher Precision-Wert bedeutet, dass wenn das Modell ein Objekt erkennt, es mit hoher Wahrscheinlichkeit tatsächlich vorhanden ist.
+
+\[Precision = \frac{TP}{TP + FP}\]
+
+Recall misst den Anteil der korrekt erkannten positiven Instanzen an allen tatsächlichen positiven Instanzen. Es zeigt, wie gut das Modell alle vorhandenen Objekte einer Klasse findet. Ein hoher Recall-Wert bedeutet, dass das Modell die meisten der tatsächlich vorhandenen Objekte erkennt.
+
+\[Recall = \frac{TP}{TP + FN}\]
+
+mAP50 (mittlere durchschnittliche Präzision bei IoU=0.5) ist eine Metrik, die die Genauigkeit des Modells bei der Objekterkennung über alle Klassen hinweg misst. Dabei wird ein Intersection over Union (IoU) Schwellenwert von 0,5 verwendet. Eine Erkennung gilt als korrekt (TP), wenn die IoU zwischen der vorhergesagten und der tatsächlichen Bounding Box größer als 0,5 ist. Ein hoher mAP50-Wert zeigt, dass das Modell einfache Objekte verschiedener Klassen zuverlässig erkennt und lokalisiert.
+
+\[mAP50 = \frac{1}{n} \sum_{i=1}^{n} AP_i\]
+\emph{wobei $n$ die Anzahl der Klassen ist und $AP_i$ die durchschnittliche Präzision für die i-te Klasse bei IoU=0.5.}
+\\
+mAP50-95 (mittlere durchschnittliche Präzision bei IoU=0.5:0.95) ist eine umfassendere Metrik, die die Leistung des Modells über verschiedene IoU-Schwellenwerte hinweg misst. Sie berechnet den Durchschnitt der mAP-Werte für verschiedene IoU-Schwellenwerte von 0,5 bis 0,95 in Schritten von 0,05. Dies gibt einen robusteren Überblick über die Modellleistung, da es verschiedene Grade der Überlappungsgenauigkeit berücksichtigt. Ein hoher mAP50-95-Wert zeigt, dass das Modell sowohl bei einfachen als auch bei schwereren zuverlässige Vorherasen trifft.
+
+\[\mathit{mAP50\mbox{-}95} = \frac{1}{10} \sum_{t=0.5}^{0.95} mAP_t\]
+
+wobei t die IoU-Schwellenwerte von 0.5 bis 0.95 in Schritten von 0.05 durchläuft.
+
+
+
+\section{U-Net}
+abc
+
+
+
+
+Für das Kapitel "Implementation" in Ihrer Bachelorarbeit über YOLO und U-Net sollten Sie sich auf die praktischen Aspekte der Umsetzung dieser Modelle konzentrieren. Hier sind einige Punkte, die Sie berücksichtigen sollten:
+
+Technische Details der Implementierung:
+
+Verwendete Programmiersprache und Frameworks (z.B. Python, PyTorch, TensorFlow)
+Benötigte Hardware (GPUs, etc.)
+Verwendete Bibliotheken und deren Versionen
+
+
+Architektur-Anpassungen:
+
+Spezifische Änderungen, die Sie an den Standard-YOLO- und U-Net-Architekturen vorgenommen haben
+Begründung für diese Anpassungen
+
+
+Datenaufbereitung:
+
+Beschreibung der Datenvorverarbeitung
+Augmentierungstechniken, falls verwendet
+
+
+Hyperparameter:
+
+Gewählte Hyperparameter (Lernrate, Batchgröße, etc.)
+Begründung für die Wahl dieser Parameter
+
+
+Training:
+
+Kurze Beschreibung des Trainingsprozesses (Anzahl der Epochen, Optimierungsmethode)
+Verwendete Loss-Funktionen
+
+
+Inferenz:
+
+Beschreibung, wie die trainierten Modelle für Vorhersagen eingesetzt werden
+
+
+Herausforderungen und Lösungen:
+
+Technische Schwierigkeiten, die während der Implementierung auftraten
+Wie Sie diese Herausforderungen bewältigt haben
+
+
+
+Die detaillierte Funktionsweise von YOLO und U-Net gehört eher in den theoretischen Teil oder in das Grundlagenkapitel Ihrer Arbeit. Die spezifischen Experimente, Ergebnisse und deren Auswertung sollten in einem separaten Kapitel "Experimente und Ergebnisse" behandelt werden.
+Das Implementierungskapitel konzentriert sich auf die technischen Aspekte und praktischen Schritte, die Sie unternommen haben, um die Modelle für Ihr spezifisches Problem umzusetzen. Es bildet die Brücke zwischen der Theorie und den konkreten Experimenten.
