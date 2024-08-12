@@ -12,6 +12,7 @@ Die erkannten Liniendiagramme werden anschließend anhand ihrer Auswertungsschwi
 Um mit Hilfe von Deep-Learning Modelle zu trainieren, werden annotierte Grundwahrheiten (ground truth) benötigt.
 
 \subsection{Datensatz DocBank zur Objekterkennung}
+\label{ch:chartbank}
 
 Für die Erkennung von Diagrammen in Texten wurden DocBank \cite{li2020docbank} und ein Anteil der historischen Wirtschaftsscans verwendet. DocBank besteht aus wissenschaftliche Publikation mit computergenerierten Grafiken zusammengesetzt, weshalb DocBanks Dokumentenseiten lediglich zum Vortrainieren des Detektionsmodells gedacht sind. Beabsichtigt wurde dieser Prozess des Vortrainierens um das System schneller und algemeingültiger, also mit besseren Voraussagen, trainieren zu können. Spätere Experimente untersuchen diese Annahme.
 \\
@@ -35,6 +36,7 @@ Ebenfalls können Diagrammgruppen aus verschiedenen Diagrammtypen bestehen, etwa
 Insgesamt wurden 321 Seiten annotiert, beinhaltend aus 105 Liniendiagrammen, 115 Balkendiagrammen (vereinigt mit Histogrammen), 79 sonstige und 66 gemischte Diagrammen.
 
 \subsection{Datensatz historischer Wirtschaftsscans zur Objekterkennung}
+\label{ch:scanbank}
 
 \begin{wrapfigure}{r}{0.25\textwidth}
     \vspace{-\intextsep} % Remove vertical space above the figure
@@ -49,6 +51,7 @@ Es wurden insgesamt 2391 zufällige Seiten ausgewählt und manuell annotiert, wo
 
 \clearpage
 \section{Schwierigkeitsklassifizierung von Liniendiagrammen}
+\label{ch:linebank}
 
 Aufgrund der überwiegenden Liniendiagrammen in den historischer Wirtschaftsscans, wurde sich im Folgenden primär auf die Auswertung der Liniendiagrammen fokusiert.
 \\
@@ -99,6 +102,7 @@ Im Folgenden wird die Datensatzerstellung für die sowohl semantischer Segmentat
 \clearpage
 
 \subsection{Datensatz von synthetischen Liniendiagrammen zur Segmentation}
+\label{ch:genlines}
 
 \begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
@@ -121,6 +125,7 @@ Der synthetische Datensatz besteht aus 2000 verschiedenen, zufällig generierten
 \clearpage
 
 \subsection{Datensatz von historischen Liniendiagrammen zur Segmentation}
+\label{ch:lines}
 
 \begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
