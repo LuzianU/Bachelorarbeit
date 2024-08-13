@@ -14,10 +14,11 @@ Es wurden verschiedene YOLO Modelle verwendet, an denen jedoch keine Architektur
 Sofern im Weiteren nicht explizit angegeben, wurden die Grundeinstellungen des Ultralytics YOLO Frameworks benutzt. Die genaue Anzahl der Trainingsepochen variierte zwischen den einzelnen Trainingsvorgängen, da bei allen die Geduldseinstellung (patience) von 100 Epochen verwendet wurde. Um die Überanpassung (over-fitting) an den Trainingsdatensatz zu vermeiden, wird mit diesem Geduldsparameter das Training vorzeitig abgebrochen, solange in den letzten beliebigen Epochen das trainierende Modell keine Verbesserungen der Validationsmetriken aufweisen konnte.
 
 \subsection{Objekterkennung zur Extraktion von Diagrammen aus Texten}
+\label{ch:objectdetection}
 
 Für die Erkennung aller Diagrammen in den Vollseitscans wurde das YOLOv9e Modell verwendet.
 \\
-Zuerst wurde es auf den in \ref{ch:chartbank} beschreibenen, selbst erstellten DocBank Datensatz vortrainiert (pre-trained) und danach auf den Datensatz aus \ref{ch:scanbank}, der historischen Wirtschaftsscans, feintrainiert (fine-tuned).
+Zuerst wurde es auf den in \ref{ch:chartbank} beschreibenen, selbst erstellten DocBank Datensatz vortrainiert (pre-trained) und danach auf den Datensatz aus \ref{ch:scanbank}, der historischen Wirtschaftsscans, feintrainiert (fine-tuned). Beide Datensätze wurden mit der häufig verwendeten 80-20 Aufteilung differenziert. In diesem Fall werden 80\% des Datensatzes für das Trainieren und 20\% für das Evaluieren des Modells benutzt. Die hierbei 20\% des Evaluationssets bestehen aus Daten, welche das Modell vor dem Zeitpunkt noch nie gesehenen hat und dementsprechend unbekannt sind.
 \\
 Es wurde die Bildgröße von 1024x1024 Pixel verwendet und eine Batchgröße von 7 gewählt, da für eine höhere Batchgröße die verwendete Grafikkarte über ungenügend viel Speicher verfügte. Die von den Grundeinstellungen geänderten Parametern der Datenaugmentierung, mitsamt ihrer jeweiligen Wahrscheinlichkeiten, bestanden aus:
 
@@ -31,14 +32,68 @@ Es wurde die Bildgröße von 1024x1024 Pixel verwendet und eine Batchgröße von
 
 Gewählt wurden diese Augmentierungstechniken mit dem Ziel die universelle Erkennungsfähigkeiten des trainierted Modells zu stärken. Farbmanipulationen helfen dem Modell zuversichtlichere Vorhersagen auf einer breiten Spanne unterschiedlicher Papierhintergründe zu treffen, beziehungsweise Diagramme mit willkürlichen Farben besser zu erkennen.
 
+\clearpage
+
 
 \subsection{Klassifizierung zur Schwierigkeitsbestimmung von Liniendiagrammen}
-abc
+
+Der Trainingsvorgang der Schwierigkeitsklassifizierung der Liniendiagrammen folgte ähnlich der Objekterkennung aus \ref{ch:objectdetection}. Da hier das gewählte YOLOv8m-cls Modell nur Vorhersagen über bereits extrahierte Diagramme machen muss und nicht mehr über Vollseitscans, wurde die Bildgröße auf 640x640 Pixel reduziert. Im Vergleich zu der vorherigen Objekterkennung konnten keine Verbesserungen der Verwendung eines größeren Modells beobachtet werden, weshlab für die Klassifizierung lediglich das Modell mittlerer Größe gewählt wurde. Die Batchgröße dagegen wurde auf 16 erhöht und ebenfalls wurde wieder der Trainingsprozess durch den Geduldsparameter von 100 beendet, anstatt durch eine festgelegte Epochenbegrenzung. Die veränderten Augmentierungstechniken, sowie deren Parameter, bestanden aus:
+
+\begin{itemize}[itemsep=0pt, topsep=0pt]
+    \item Farbmanipulation im HSV-Farbraum: Hue (1.0), Sättigung (1.0) und Helligkeit (0.5)
+    \item BGR-Kanaländerung (0.5)
+    \item Vertikales Spiegeln (0.1)
+    \item Rotation ($\pm$5°)
+    \item Scherung ($\pm$5°)
+    \item Zufälliges Löschen (1.0)
+\end{itemize}
+
+Auch wenn das Löschen zufälliger Bereiche im Bild möglicherweise kontraproduktiv wirkt, erziehlte die Verwendung dieser Technik zu besseren Ergebnissen, weshalb sie mit einbezogen wurde. Die restlichen Augmentierungen wurden für die breitere Diagrammsvarianz gewählt.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.75\linewidth}
+    \includegraphics[width=.75\textwidth]{Implementation/img/classify_train_batch.jpg}
+    \caption{\hbadness=10000 Augmentierter Trainingsbatch der Klassifizierung}
+    \label{fig:classify_train_batch}
+\end{figure}
+
+Desweiteren wurde dieser beschriebene Trainingsprozess erneut auf der anderen Version, des in \ref{ch:linebank} beschriebenen, Datensatzes mit der Vereinigung der sich überlappenden und nicht überlappenden Wertelinien in die gemeinsame Klasse mehrerer Wertelinien trainiert.
+
 \subsection{Instanzsegmentation von Wertelinien in Liniendiagrammen}
-abc
+
+Die Instanzsegmentation durch Ultralytics YOLO erfolgte mithilfe der in \ref{ch:genlines} und \ref{ch:lines} definierten Datensätze der Wertelinien synthetischer und historischer Liniendiagramme. Wie zuvor beschrieben wurden diese zuerst in das, von dem Framework benötigte, Polygonannotationsformat konvertiert. Die Korrektheit der Konvertation von den Binärmasken in Polygonform wurde durch den von Ultralytics erstellten Trainingsbatches, als auch durch Auswertung mithilfe der Annotationswebseite Roboflow \cite{dwyer2024roboflow} überprüft werden. Im Anschluss konnte das YOLOv8x-seg Model mit einer Bildgröße von 512x512 Pixel und Batchgröße von 16 trainiert werden. Der Trainingsprozess verlief erneut in zwei Schritten.
 
 
-\section{U-Net}
+Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen, als auch das Feintrainieren auf den  historischen Liniendiagrammen gewählt. Ebenfalls wurden für beie Trainingsprozesse dieselben Augmentierungstechniken verwendet:
+
+\begin{itemize}[itemsep=0pt, topsep=0pt]
+    \item Farbmanipulation im HSV-Farbraum: Hue (1.0), Sättigung (1.0) und Helligkeit (0.5)
+    \item BGR-Kanaländerung (0.5)
+    \item Vertikales Spiegeln (0.5)
+    \item Rotation ($\pm$90°)
+    \item Zufälliges Löschen (0.7)
+    \item Überlagern von Bildern (Mixup, 0.5)
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.75\linewidth}
+    \includegraphics[width=.75\textwidth]{Implementation/img/instance_annotated.png}
+    \caption{\hbadness=10000 Annotierte Wertelinien der Liniendiagrammen zur Instanzsegmentation}
+    \label{fig:instance_annotated}
+\end{figure}
+
+\clearpage
+
+
+
+
+
+
+
+
+\section{U-Net: Semantische Segmentation von Wertelinien}
 abc
 
 \section{Numerische Auswertung von Liniendiagrammen in Tabellenform}
