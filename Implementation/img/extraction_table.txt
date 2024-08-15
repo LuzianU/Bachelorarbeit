@@ -1,0 +1,14 @@
+Line 0: USA
+1949	187.01
+1950	227.78
+1951	248.06
+
+Line 1: Weltproduktion (westl. Hemisphäre)
+1949	144.45
+1950	171.62
+1951	188.42
+
+Line 2: Bundesrepublik Deutschland
+1949	74.53
+1950	92.95
+1951	111.09

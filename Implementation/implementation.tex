@@ -62,7 +62,7 @@ Desweiteren wurde dieser beschriebene Trainingsprozess erneut auf der anderen Ve
 
 \subsection{Instanzsegmentation von Wertelinien in Liniendiagrammen}
 
-Die Instanzsegmentation durch Ultralytics YOLO erfolgte mithilfe der in \ref{ch:genlines} und \ref{ch:lines} definierten Datensätze der Wertelinien synthetischer und historischer Liniendiagramme. Wie zuvor beschrieben wurden diese zuerst in das, von dem Framework benötigte, Polygonannotationsformat konvertiert. Hierzu wurde Python in Verbindung mit der Bildverarbeitungsbibliothek OpenCV \cite{opencv_library} verwendet. Die Korrektheit der Konvertation von den Binärmasken in Polygonform wurde durch den von Ultralytics erstellten Trainingsbatches, als auch durch Auswertung mithilfe der Annotationswebseite Roboflow \cite{dwyer2024roboflow} überprüft werden. Im Anschluss konnte das YOLOv8x-seg Model mit einer Bildgröße von 512x512 Pixel und Batchgröße von 16 trainiert werden. Der Trainingsprozess verlief erneut in zwei Schritten.
+Die Instanzsegmentation durch Ultralytics YOLO erfolgte mithilfe der in \ref{ch:genlines} und \ref{ch:lines} definierten Datensätze der Wertelinien synthetischer und historischer Liniendiagramme. Wie zuvor beschrieben wurden diese zuerst in das, von dem Framework benötigte, Polygonannotationsformat konvertiert. Hierzu wurde Python 3.10.12 in Verbindung mit der Bildverarbeitungsbibliothek OpenCV \cite{opencv_library} verwendet. Die Korrektheit der Konvertation von den Binärmasken in Polygonform wurde durch den von Ultralytics erstellten Trainingsbatches, als auch durch Auswertung mithilfe der Annotationswebseite Roboflow \cite{dwyer2024roboflow} überprüft werden. Im Anschluss konnte das YOLOv8x-seg Model mit einer Bildgröße von 512x512 Pixel und Batchgröße von 16 trainiert werden. Der Trainingsprozess verlief erneut in zwei Schritten.
 Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen, als auch das Feintrainieren auf den  historischen Liniendiagrammen gewählt. Ebenfalls wurden für beie Trainingsprozesse dieselben Augmentierungstechniken verwendet:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
@@ -87,11 +87,11 @@ Hier wurden stärkere Augmentierungstechniken gewählt, da Wertelinien unabhäng
 
 \section{U-Net: Semantische Segmentation von Wertelinien}
 
-Als Alternative zur Instanzsegmentation wurde ebenfalls die semantische Segmentation durch die Eigenimplementation der U-Net Architektur verwirklicht. Diese wurde speziell für die medizinisch Bildsegmentierung und zeichnet sich besonders bei einer limitierten Anzahl von Trainingsdaten aus. Die Architektur des CNNs (convolutional neural network) kombiniert Encoder- und Decoderpfade mit Skip-Verbindungen um so präzise Segmentationsergebnisse zu erziehlen.
+Als Alternative zur Instanzsegmentation wurde ebenfalls die semantische Segmentation durch die Eigenimplementation der U-Net Architektur verwirklicht. Diese wurde speziell für die medizinisch Bildsegmentierung entwickelt und zeichnet sich besonders bei einer limitierten Anzahl von Trainingsdaten aus. Die Architektur des CNNs (convolutional neural network) kombiniert Encoder- und Decoderpfade mit Skip-Verbindungen um so präzise Segmentationsergebnisse zu erziehlen.
 \\
-Implementiert wurde die Datenvorverarbeitung, das Modelltraining und die Evaluation mithilfe der Keras API \cite{chollet2015keras}. Für die Augmentierung der Trainingsdaten wurde die Bibliothek Albumentations \cite{info11020125} genutzt. Lediglich der Code der U-Net Architektur selbst wurde in Form des Vanilla U-Nets \cite{zak2024kerasunet} übernommen.
+Implementiert wurde die Datenvorverarbeitung, das Modelltraining und die Evaluation mithilfe der Keras 3 API \cite{chollet2015keras}. Für die Augmentierung der Trainingsdaten wurde die Bibliothek Albumentations \cite{info11020125} genutzt. Lediglich der Code der U-Net Architektur selbst wurde in Form des Vanilla U-Nets \cite{zak2024kerasunet} übernommen.
 \\
-Der Ablauf des U-Net Trainings wurde wie folgt durchlaufen:
+Der Ablauf des U-Net Trainings durchlief wie folgt:
 Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelesen. Im Fall der Binärmasken wurde der Schwellenwert (threshold) von 30\% genutzt. Nach der Deklaration der Modellarchitektur wurde die Datenagumentation definiert. Folgende Augmentierungstechniken wurden verwendet:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
@@ -113,55 +113,128 @@ Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelese
     \item Überlagern mit einem anderen Bild (\texttt{A.MixUp}, \texttt{p=1.0}, \texttt{alpha=0.7})
 \end{itemize}
 
+Es wurde eingerichtet, dass die Trainingsbilder samt ihrer zugehörigen Binärmasken jeweils pro Batch neu augmentiert werden. Der Validationsdatensatz dagegen wurde unaugmentiert verarbeitet. Durch Abspeichern der einzelnen Bilderbatches konnte der fehlerfreie Augmentierungsablauf manuell verifiziert werden.
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.75\linewidth}
+    \includegraphics[width=.75\textwidth]{Implementation/img/unet_training.png}
+    \caption{\hbadness=10000 Augmentierter Trainingsbatch inklusive der zugehörigen Binärmasken}
+    \label{fig:unet_training}
+\end{figure}
+
+Nach diesem Implementationsschritt konnte der Trainingsprozess gestartet werden. Hierfür wurde ebenfalls, die für die Grafikkarte größtmöglichste Batchgröße von 7 verwendet, und ein Geduldsparameter von 100 Epochen genutzt, welcher das Training zum frühzeitigen Abbrechen (early stopping) führt. Als Überwachungsmetrik (monitor) dafür wurde der Trainingsverlust (training loss) gewählt; sobald dieser über die bestimmte Anzahl an Epochen nicht unterschritten wurde, beendet das Training vorzeitig. Aufgrund der Minimierungsoptimierung des verwendeten Adam Optimierers (optimizer) \cite{kingma2017adammethodstochasticoptimization} wurde dieser Trainings Loss als Negativ des Dice-Sørensen-Koeffizient (dice score) festgelegt, welcher ebenfalls als Validationsfunktion dient. Der Dice Score misst die Überlappung zwischen der Vorhersage und der Ground Truth, wobei ein Wert von 1 eine perfekte Übereinstimmung und 0 keine Übereinstimmung bedeutet. Als Learnrate (learning rate) wurde 0.0001 und als Dropout-Rate 0.0 gewählt. Für die genannten Validations- und Verlustfunktionen wurden folgende Formeln verwendet:
+
+% Dice Score Function
+\begin{equation}
+    \text{Dice Score}(y_{\text{true}}, y_{\text{pred}}) = \frac{2 \cdot \sum_{i} (y_{\text{true}_i} \cdot y_{\text{pred}_i}) + 1}{\sum_{i} y_{\text{true}_i} + \sum_{i} y_{\text{pred}_i} + 1} \nonumber
+\end{equation}
+
+% Dice Loss Function
+\begin{equation}
+    \text{Dice Loss}(y_{\text{true}}, y_{\text{pred}}) = -\text{Dice Score}(y_{\text{true}}, y_{\text{pred}}) \nonumber
+\end{equation}
+
+Hierbei steht $y_{\text{true}}$ für die Grundwahrheiten und $y_{\text{pred}}$ für die Modellvorhersagen. Der Index $i$ läuft über alle Pixel der Bilder. Die Addition von 1 im Zähler und Nenner dient der numerischen Stabilität.
+
+
 \section{Numerische Auswertung von Liniendiagrammen in Tabellenform}
-abc
 
+Um die historischen Liniendiagramme in Tabellenform auswerten zu können wurde die vorherig beschriebene U-Net Segmentierung mitbenutzt. Die generelle Idee des Auswertungsalgorithmus besteht aus der Kombination der, durch die implementierte Segmentierung möglichgemachte, Wertelinienerkennung und einer optischen Schriftzeichenerkennung (optical character recognition; OCR), aus welcher unter anderem Achsenbeschriftungen und deren numerischen Kontext extrahiert werden können. Umgesetzt wurde dieser Algorithmus ebenfalls der Programmiersprache Python. Im Folgenden wird die Funktionsweise des zweigeteilten Algorithmus im Nähren beschreiben.
 
+\subsection{Extraktion der segmentierten Wertelinien}
 
-Für das Kapitel "Implementation" in Ihrer Bachelorarbeit über YOLO und U-Net sollten Sie sich auf die praktischen Aspekte der Umsetzung dieser Modelle konzentrieren. Hier sind einige Punkte, die Sie berücksichtigen sollten:
+Aufgrund der, später sichtlich gemachten, souveräneren Ergebnisse des U-Nets im Vergleich mit dem Ultralytics YOLO Segmentierungsmodell, wurde dieses für die Wertelinienextraktion verwendet. Allerdings verfügt das U-Net lediglich über die semantische Segmentierung, weshalb dies im Kontrast zu der Instanzsegmentation ein nicht triviales Hindernis aufwirft: Die semantische Segmentation kann nicht zwischen mehreren Wertelinien unterscheiden. Überschneiden oder Überlappen sich diese können die erkannten Linien vom Modell aus nicht differenziert werden. Dementsprechend muss die Wertelinientrennung in der Nachverarbeitung bewältigt werden.
+\\
+Der erste Schritt der Wertelinienextraktion ist die semantisch segmentierte Binärmaskenvorhersage des U-Nets zu skelettieren (skeletonize). Sowie alle anderen folgenden Bildbearbeitungsfunktionen wurde dieses Ausdünnen der Linien mit Hilfe der OpenCV Bibliothek erledigt. Um mögliche kleine Lücken zu füllen durchläuft die resultierende Maske eine schließende Morphologie (closing morphology) mit einer Kerngröße (kernel size) von 3x3 Pixel.
 
-Technische Details der Implementierung:
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.315\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_input.png}
+        \caption{\hbadness=10000 Zu auswertendes Liniendiagramm}
+        \label{fig:alg_input}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_pred.png}
+        \caption{\hbadness=10000 Semantische U-Net Vorhersage}
+        \label{fig:alg_pred}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_skeletonized.png}
+        \caption{\hbadness=10000 Skelletierte Binärmaske}
+        \label{fig:alg_skeletonized}
+    \end{minipage}
+\end{figure}
 
-Verwendete Programmiersprache und Frameworks (z.B. Python, PyTorch, TensorFlow)
-Benötigte Hardware (GPUs, etc.)
-Verwendete Bibliotheken und deren Versionen
+Um das Problem der Linientrennung zu überwinden wurde die Entscheidung getroffen einen primitiven Algorithmus zu verwenden, welcher die Wertelinien anhand ihrer räumlichen Position im Diagramm willkürlich differenziert. Im Folgenden werden alle sich überschneidenden Wertelinien nach dieser Approximation getrennt. Dementsprechend wurde das anspruchsvolle Problem der Wertelinientrennung im Weiteren aufgrund seiner Komplexität und des begrenzten Rahmens dieser Arbeit nicht weiter eingehend behandelt.
+\\
+Dieser Linientrennungsalgorithmus funktioniert wie folgt: Zuerst wird die gesamte Anzahl der Wertelinien ermittelt. Dazu wird für jede vertikale Pixelspalte des Bildes das Aufkommen von nicht-schwarzen Pixel gezählt. Da im Fall von vertikal verlaufenden Wertelinien mehrere von diesen aufeinanderfolgen können muss eine Gruppe an sequentiellen nicht-schwarzen Pixel als nur ein Aufkommen gewertet werden. Die berechneten Werte pro Pixelspalte werden daraufhin der Aufkommensgröße nach sortiert und die größten 5\% entfernt. Diese enthalten mögliche fehlerbehaftete Werte aufgrund eventueller Artefakte in der Werteliniensegmentation. Anschließend wird der verbleibende Maximalwert als gesamte Linienanzahl definiert.
+\\
+Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pixelspalten der vorhergesagten Binärmaske durchlaufen. Ebenfalls wird wieder die Anzahl der Aufkommenden Wertelinien gezählt. Besitzt die jeweilige Pixelspalte nun dieselbe Anzahl an Linien wie die berechnete gesamte Linienanzahl, dann wird die \emph{i-te} sequentielle Gruppe an nicht-schwarzen Pixel der \emph{i-ten disjunkten Wertelinienbinärmaske} zugeordnet. Sollte dies allerdings nicht der Fall sein, wird die gesamte Pixelspalte in eine \emph{gemeinsam genutzte Binärmaske} übertragen.
 
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.315\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_layer1.png}
+        \caption{\hbadness=10000 Disjunkte Binärmaske der ersten Linie}
+        \label{fig:alg_layer1}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_layer2.png}
+        \caption{\hbadness=10000 Disjunkte Binärmaske der zweiten Linie}
+        \label{fig:alg_layer2}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_shared.png}
+        \caption{\hbadness=10000 Gemeinsam genutzte Binärmaske}
+        \label{fig:alg_shared}
+    \end{minipage}
+\end{figure}
 
-Architektur-Anpassungen:
+Somit können die Wertelinien anhand ihrer Position differenziert werden. Um nun die einzelnen kontinuierlichen Linienwerte zu extrahieren, müssen die disjunkten Binärmasken lediglich jeweils mit der gemeinsam genutzten Maske bitweise vereinigt werden. Durch die OpenCV Funktion des Auffindens verbundener Komponenten (connected components) wird anschließend die räumlich längste ausgewählt und der Mittelwert aller nicht-schwarzen Pixel pro Pixelspalte dieser Komponente berechnet. Um möglichem Rauschen zu entgegenwirken wird nach Gaußscher Weichzeichnung (gaussian blur) mit einem Kern von 5x5 Pixel die Positionssequenz jeder getrennten Wertelinie im Diagramm ermittelt.
 
-Spezifische Änderungen, die Sie an den Standard-YOLO- und U-Net-Architekturen vorgenommen haben
-Begründung für diese Anpassungen
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
+    \centering
+    \begin{minipage}{0.315\textwidth} % First figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_layer1_processed.png}
+        \caption{\hbadness=10000 Vereinigte Binärmaske der ersten Linie}
+        \label{fig:alg_layer1_processed}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_layer2_processed.png}
+        \caption{\hbadness=10000 Vereinigte Binärmaske der zweiten Linie}
+        \label{fig:alg_layer2_processed}
+    \end{minipage}\hfill % Add space between figures
+    \begin{minipage}{0.315\textwidth} % Second figure
+        \centering
+        \includegraphics[width=\linewidth]{Implementation/img/alg_mat.png}
+        \caption{\hbadness=10000 Getrennte Wertelinien}
+        \label{fig:alg_mat}
+    \end{minipage}
+\end{figure}
 
+\subsection{Achsenerkennung durch optischer Schriftzeichenerkennung}
 
-Datenaufbereitung:
+Der andere Teil der Liniendiagrammsauswertung setzt sich aus optischen Schriftzeichenerkennung zusammen, aus welcher Titel, Linienbezeichnungen und Achsenbeschriftungen (label) ausgearbeitet werden können. Für die Label der Achsen wird außerdem derer Mittelpunktposition im Diagramm für die numerische Tabellenformauswertung verwendet. Bis auf limitierte Ausnahmen befinden sich so alle Datenpunkte, beispielweise bei Diagramme über Jahresentwicklungen, in der Jahresmitte.
+\\
+Für die optische Schriftzeichenerkennung wurde die JavaScript Bibliothek Chrome Lens OCR \cite{dimden2024chromelensocr} verwendet, während der restliche Algorithmus weiterhin in Python implementiert wurde. Diese OCR-Bibliothek verwendet die im Chromium Browser eingebettete Google Lens OCR und kann ohne weiteren Authentifizierungsprozess genutzt werden. Die Brücke zwischen Python und JavaScript erfolgt durch das programmatische Aufrufen des JavaScript Codes über die Konsole in Python, welcher daraufhin von ihr in Textform ausgelesen und verarbeitet werden kann. Zur Verfügung gestellt werden die erkannten Textbezeichnungen selbst, aber auch ihre jeweiligen absoluten und relativen Positionen innerhalb des Diagrammbilds.
 
-Beschreibung der Datenvorverarbeitung
-Augmentierungstechniken, falls verwendet
+\begin{figure}[H]
+    \centering
+    \captionsetup{width=.75\linewidth}
+    \includegraphics[width=.75\textwidth]{Implementation/img/ocr.png}
+    \caption{\hbadness=10000 buh}
+    \label{fig:ocr}
+\end{figure}
 
-
-Hyperparameter:
-
-Gewählte Hyperparameter (Lernrate, Batchgröße, etc.)
-Begründung für die Wahl dieser Parameter
-
-
-Training:
-
-Kurze Beschreibung des Trainingsprozesses (Anzahl der Epochen, Optimierungsmethode)
-Verwendete Loss-Funktionen
-
-
-Inferenz:
-
-Beschreibung, wie die trainierten Modelle für Vorhersagen eingesetzt werden
-
-
-Herausforderungen und Lösungen:
-
-Technische Schwierigkeiten, die während der Implementierung auftraten
-Wie Sie diese Herausforderungen bewältigt haben
-
-
-
-Die detaillierte Funktionsweise von YOLO und U-Net gehört eher in den theoretischen Teil oder in das Grundlagenkapitel Ihrer Arbeit. Die spezifischen Experimente, Ergebnisse und deren Auswertung sollten in einem separaten Kapitel "Experimente und Ergebnisse" behandelt werden.
-Das Implementierungskapitel konzentriert sich auf die technischen Aspekte und praktischen Schritte, die Sie unternommen haben, um die Modelle für Ihr spezifisches Problem umzusetzen. Es bildet die Brücke zwischen der Theorie und den konkreten Experimenten.
+Nach dem alle erkannten OCR-Labels bereitgestellt wurden, werden diese mithilfe ihrer Mittelpunktpositionen in fünf disjunkte Gruppen eingeteilt: Titel, Linienbezeichnungen, linke Y-Achse, rechte Y-Achse und untere X-Achse. Für die drei Achsenbeschriftungen werden nur jenige Labels untersucht, welche sich auf dem äußeren Rand von 15\% des Bildes befinden. Die horizontale und vertikale Mittelwertposition aller Labels für die drei Achsen wird bestimmt und mit dieser werden mögliche Beschriftungen, welche sich nicht innerhalb 2\% der jeweiligen Mittelwertlinie befinden, aussortiert. Ebenfalls werden alle Beschriftungen unterhalb der erkannten X-Achse, unabhängig dieser vorherigen Einschrenkung, ignoriert. Um mögliche Schriftzeichenerkennungsfehler entgegenzuwirken wird der Text der erkannten Achsenlabels gefiltert. Erkannte Kommas werden in Punkte verwandelt und danach alle Buchstaben und andere Zeichen entfernt, sodass der Text am Ende nur noch aus den Zeichen 0-9, Punkte und Minuszeichen besteht. Diese Entscheidung wurde getroffen um fälschlicherweise miterkannte Einheitsangaben, oder andere OCR-Fehler zu verbessern. Das Aufkommen von falscher OCR bei Ziffern, z.B. die Erkennung von einem B statt einer 8, kam nur sehr selten vor, weshalb dieser Schritt gewählt wurde.
+-> titel und rest
