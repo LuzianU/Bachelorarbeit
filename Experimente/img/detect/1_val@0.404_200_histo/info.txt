@@ -1,0 +1,12 @@
+)
+Model summary (fused): 218 layers, 25842655 parameters, 0 gradients, 78.7 GFLOPs
+val: Scanning /autofs/stud/uihlein/ba/datasets/chartbank_00200_80_20/labels/val.cache... 40 images, 9 backgrounds, 0 corrupt: 
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 5/5 [00:01<00:00,  
+                   all         40         42       0.65      0.679      0.689      0.651
+                 Other          8          9      0.833      0.556      0.741      0.723
+                  Line          7          7      0.545      0.857       0.86      0.847
+                   Bar         11         13      0.769      0.769      0.851      0.765
+             Histogram          6          7        0.5      0.714      0.429      0.429
+               Mixture          6          6        0.6        0.5      0.565      0.492
+Speed: 3.0ms preprocess, 8.1ms inference, 0.0ms loss, 16.6ms postprocess per image
+Results saved to runs/detect/val@0.404 20240606-142509_chartbank_00200_80_20_yolov8m_8#_500X

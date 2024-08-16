@@ -1,0 +1,5 @@
+val: Scanning /autofs/stud/uihlein/nn/datasets/59_yolo_lines_dilated_optimized_63_37/labels/val.cache... 22 images, 0 backgrounds, 0 corrupt
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95)     Mask(P          R      mAP50  mAP50-95): 100%|█
+                   all         22         55      0.956      0.782      0.883      0.813      0.933      0.764      0.852      0.433
+Speed: 1.4ms preprocess, 27.0ms inference, 0.0ms loss, 25.7ms postprocess per image
+Results saved to runs/segment/val

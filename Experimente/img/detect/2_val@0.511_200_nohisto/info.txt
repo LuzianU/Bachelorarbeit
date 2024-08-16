@@ -1,0 +1,11 @@
+Model summary (fused): 218 layers, 25842076 parameters, 0 gradients, 78.7 GFLOPs
+val: Scanning /autofs/stud/uihlein/ba/datasets/chartbank_nohisto_00200_80_20/labels/val.cache... 40 images, 9 backgrounds, 0 c
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 5/5 [00:00<00:00,  
+                   all         40         42      0.758      0.646       0.72      0.676
+                 Other          8          9      0.974      0.556      0.741      0.645
+                  Line          7          7      0.667      0.857      0.884       0.83
+                   Bar         17         20      0.893      0.837      0.838      0.829
+               Mixture          6          6        0.5      0.333      0.416      0.401
+Speed: 3.0ms preprocess, 8.3ms inference, 0.0ms loss, 1.2ms postprocess per image
+Results saved to runs/detect/val@0.511 20240606-143439_chartbank_nohisto_00200_80_20_yolov8m_8#_500X
+💡 Learn more at https://docs.ultralytics.com/modes/val

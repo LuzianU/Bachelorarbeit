@@ -1,0 +1,9 @@
+val: Scanning /autofs/stud/uihlein/ba/datasets/chartbank_nohisto_80_20/labels/val.cache... 71 images, 17 backgrou
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|██████████| 9/9 [0
+                   all         71         74      0.738      0.622      0.728      0.721
+                 Other         13         16        0.5        0.5      0.616       0.61
+                  Line         17         21      0.765      0.619      0.749      0.749
+                   Bar         20         23      0.909       0.87      0.899      0.881
+               Mixture         12         14      0.778        0.5       0.65      0.642
+Speed: 1.5ms preprocess, 21.5ms inference, 0.0ms loss, 0.9ms postprocess per image
+Results saved to runs/detect/val@0.653 20240610-134338_chartbank_nohisto_80_20_yolov9e_7#_5000X_augmented

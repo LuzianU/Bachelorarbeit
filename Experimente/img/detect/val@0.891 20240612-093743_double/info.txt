@@ -1,0 +1,11 @@
+val: Scanning /autofs/stud/uihlein/ba/datasets/scanbank_nohisto_02444_80_20/labels/val.cache... 492
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100%|████
+                   all        492        127      0.974      0.811      0.899      0.896
+                 Other         18         18      0.938      0.833      0.905      0.891
+                  Line         61         73      0.958      0.945       0.96       0.96
+                   Bar         21         23          1      0.696      0.848      0.848
+               Mixture         13         13          1      0.769      0.885      0.885
+Speed: 0.5ms preprocess, 19.3ms inference, 0.0ms loss, 0.2ms postprocess per image
+Results saved to runs/detect/val@0.891 20240612-093743_double
+💡 Learn more at https://docs.ultralytics.com/modes/val
+studuihlein@gpu1b:~/ba$ ./val.sh
