@@ -263,7 +263,7 @@ Die extrahierten kontinuierlichen Linienwerte können nach vorherigem Skalieren,
     \label{fig:extraction_output}
 \end{figure}
 
-Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand. Für jedes Label der X-Achse wird dessen Schnittpunkt einer von ihrem Mittelpunkt aus verlaufenden, vertikalen Linie mit allen Werteliniensequenzen berechnet und der Y-Wert notiert. Zu visuellem Zweck wurden diese Schnittpunkte ebenfalls in dem grafisch dargestellten Graph veranschaulicht.
+Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand. Für jedes Label der X-Achse wird dessen Schnittpunkt einer von ihrem Mittelpunkt aus verlaufenden, vertikalen Linie mit allen Werteliniensequenzen berechnet und der die räumliche Y-Position bestimmt. Anschließend wurde durch linearer Inter- und Extrapolation mithilfe der SciPy \cite{2020SciPy-NMeth} Bibliothek der genaue Y-Wert zwischen den Labelwerten der linken Y-Achse berechnet. Zu notieren ist hier, dass diese lineare Interpolation bei Diagrammen mit beispielsweise logarithmischer Skala zu Evaluationsfehlern führt. Diese Diagrammsform ist jedoch so gering vorkommend, weshalb diese fehlerbehaftete Herangehensweise akzeptabel erscheint. Zu visuellem Zweck wurden diese Schnittpunkte ebenfalls in dem grafisch dargestellten Graph veranschaulicht.
 
 \begin{table}[H]
     \centering

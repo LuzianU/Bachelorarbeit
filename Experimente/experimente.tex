@@ -1,7 +1,7 @@
 \chapter{Experimente}
 \label{ch:experimente}
 
-Die verwendeten Metriken der Experimente fassen sich aus Präzision (precision), Erinnerung (recall), F1-Wert (F1-Score) und Richtigkeit (accuracy) zusammen. Zum Berechnen dieser wird das Aufkommen der Richtig Positiven (TP), Falsch Positiven (FP), Falsch Negativen (FN) und Richtig Negativen (TN) Vorhersagen (predictions) des Modells benutzt. Die Kategorie TP zeigt vom Modell richtig erkannte Objekte, welche tatsächlich vorhanden sind, FP bestimmt die falsche Erkennung des Modells von Objekten, die in Wirklichkeit nicht vorhanden sind, FN gibt Auskunft über Objekte, die in der Realität vorhanden sind, das Modell sie allerdings nicht erkannt hat, und TN beschreibt Objekte, die korrekt als nicht vorhanden erkannt wurden.
+Die verwendeten Metriken der Experimente fassen sich aus Präzision (precision), Erinnerung (recall), F1-Wert (F1-Score) und Genauigkeit (accuracy) zusammen. Zum Berechnen dieser wird das Aufkommen der Richtig Positiven (TP), Falsch Positiven (FP), Falsch Negativen (FN) und Richtig Negativen (TN) Vorhersagen (predictions) des Modells benutzt. Die Kategorie TP zeigt vom Modell richtig erkannte Objekte, welche tatsächlich vorhanden sind, FP bestimmt die falsche Erkennung des Modells von Objekten, die in Wirklichkeit nicht vorhanden sind, FN gibt Auskunft über Objekte, die in der Realität vorhanden sind, das Modell sie allerdings nicht erkannt hat, und TN beschreibt Objekte, die korrekt als nicht vorhanden erkannt wurden.
 
 \[Precision = \frac{TP}{TP + FP}\]
 
@@ -18,13 +18,24 @@ Der F1-Wert ist das harmonische Mittel aus Precision und Recall. Ein hoher F1-We
 \[Accuracy = \frac{TP + TN}{TP + TN + FP + FN}\]
 
 Die Richtigkeit (Accuracy) misst den Anteil aller korrekten Vorhersagen an der Gesamtzahl der Vorhersagen. Sie gibt nur an, wie oft das Modell insgesamt richtig liegt, weshalb sie nur bei der Klassifizierung verwendet wurde.
+\\
+Zum Visualisieren der Konfusionsmatrizen in diesem Kapitel wurde eine Kombination von \cite{2020SciPy-NMeth, DamianoP2024confusionMatrixGenerator} verwendet.
 
 \section{Objekterkennung}
 
 Für das Unterkapitel der Objekterkennung wurde die Effizienz, verschiedene Diagrammarten aus Texten mithilfe der Ultralytics YOLO Objekterkennungsmodelle zu extrahieren, untersucht. Hierfür wurden die erstellten Datensätze aus \ref{ch:chartbank} zum Vortrainieren und aus \ref{ch:scanbank} zum Feintrainieren verwendet.
+\\
+Ultralytics YOLO generiert nach abgeschlossenem Modelltraining automatisch verschiedene Metrikseinblicke. Insbesondere das, eines F1-Confidence Diagramms. Aus diesem kann abgelesen werden, wie ein beliebiger Konfidenz Schwellenwert (confidence threshold) der Modellvorhersagen die Evaluationsresultate des F1-Scores beinflusst. Im Folgenden werden für alle Objekterkennungsexperimente jedene Konfidenzwerte gewählt, welche den F1-Wert maximieren.
 
 \subsection{Vortrainiertes Modell auf DocBank}
+Um im Verlauf der Datensatzerstellung zu erforschen ob die visuell ähnliche Klassen der Balkendiagramme und Histogramme weiterhin differenziert werden sollen, wurde nach nach dem Erreichen einer Datensatzgröße von 200 Bildern der Datensatz mit Histogrammen, sowie derselbe mit reduzierten Klassen evaluiert.
+
 \subsection*{200 Trainingsbilder (mit Histogramme)}
+
+Aufgrund der limitierten Anzahl an verfügbaren Validationsbildern bei einem so kleinen Datensatz können allerdings schwer überzeugende Aussagen getroffen werden.
+Jedoch fällt die Verwechslung zwischen Balken und Histogramme in der Konfusionsmatrix trotzdem schnell auf. Grunsätzlich fallen die Evaluationswerte der Histogramm Klasse vergleichsweise schlechter aus, weshlab im Weiteren die manuelle Annotaiton ohne Unterscheidung zwischen Histogrammen und Balkendiagrammen fortgeführt wurde.
+\\
+Die Evaluation wurde mit einem Confidence Threshold von 40.4\% durchgeführt.
 \begin{figure}[H]
     \centering
     \captionsetup{width=1\linewidth}
@@ -42,8 +53,8 @@ Für das Unterkapitel der Objekterkennung wurde die Effizienz, verschiedene Diag
         Sonstige      & 83.33\%          & 55.56\%          & 66.67\%          \\ \hline
         Linien        & 54.55\%          & 85.71\%          & 66.67\%          \\ \hline
         Balken        & 76.92\%          & 76.92\%          & 76.92\%          \\ \hline
-        Histogramme   & 60.00\%          & 57.14\%          & 47.06\%          \\ \hline
-        Gemischt      & 40.00\%          & 50.00\%          & 54.55\%          \\ \hline
+        Histogramme   & 40.00\%          & 57.14\%          & 47.06\%          \\ \hline
+        Gemischt      & 60.00\%          & 50.00\%          & 54.55\%          \\ \hline
         \textbf{Alle} & \textbf{62.96\%} & \textbf{65.07\%} & \textbf{62.37\%} \\ \hline
     \end{tabular}
     \caption{x}
@@ -51,6 +62,7 @@ Für das Unterkapitel der Objekterkennung wurde die Effizienz, verschiedene Diag
 
 
 \subsection*{200 Trainingsbilder (ohne Histogramme)}
+Mit einem Konfidenzwert von 51.1\% wurden folgende Ergebnisse des Modells auf den Datensatz der reduzierten Klassenanzahl erziehlt. Auffallend sind nicht nur leichte Abweichungen der Linien und gemischten Klassen, welche der limitierten Evaluationsdatensatzgröße verschuldet sind, sondern auch deutliche Verbesserungen, der nun zusammengesetzten, Balkendiagrammsklasse.
 
 \begin{figure}[H]
     \centering
@@ -128,19 +140,25 @@ Für das Unterkapitel der Objekterkennung wurde die Effizienz, verschiedene Diag
 
 
 \section{Liniendiagrammsklassifizierung}
+
+Für die Liniendiagrammsklassifizierung wurden zwei Modelle jeweils auf die erstellten Klassifizierungsdatensätze aus \ref{ch:linebank} trainiert. Die Konfusionsmatrix \ref{fig:val_v1_matrix} macht die Schwierigkeit des Modells deutlich, überlappende und nicht überlappende Liniendiagramme zu differenzieren. Im Gegensatz zu \ref{fig:val_v2_matrix} werden hier 7 der insgesamt 19 nicht überlappenden Aufkommen falsch als überlappende Diagramme klassifiziert.
+
 \begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Experimente/img/classify/val_v1/matrix.png}
     \caption{\hbadness=10000 x}
-    \label{fig:extraction_output}
+    \label{fig:val_v1_matrix}
 \end{figure}
+
+Die besseren Ergebnisse der Unterscheidung zwischen einer und mehreren Wertelinien dagegen, spiegelt sich aber auch in der Accuracy wider: Statt 92.0\% des ersten Modells erziehlte dieses eine Klassifikationsgenauigkeit von 98.1\%.
+
 \begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Experimente/img/classify/val_v2/matrix.png}
     \caption{\hbadness=10000 x}
-    \label{fig:extraction_output}
+    \label{fig:val_v2_matrix}
 \end{figure}
 
 \section{Segmentation}
