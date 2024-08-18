@@ -176,16 +176,120 @@ Die besseren Ergebnisse der Unterscheidung zwischen einer und mehreren Wertelini
 \end{table}
 
 \subsection{Semantische Segmentation durch das U-Net}
+
+Mit den genannten Parametern aus \ref{ch:unet} wurden insgesamt fünf verschiedene Modelle trainiert: Eines wurde auf den in \ref{ch:lines} beschriebenen Binärmaskendatensatz der Wertelinien von synthetischen Liniendiagrammen vortrainiert. Die restlichen vier Modelle wurden auf den Werteliniendatensatz der historischen Liniendiagrammen so trainiert, um jeweils den Vergleich zwischen dem Fein- und nicht Feintrainieren und der selbst eingeführten Beschreibung des \emph{32x Batch-Paddings} darzustellen. Was dieses Batch-Padding beschreibt ist lediglich die 32-fache Duplikation aller einzelnen Trainingsdatenbilder. Da jeder einzelne Bilderbatch während des Trainingsprozesses zufällig neu augmentiert wird, und so durch das Batch-Padding die limitierten Trainingsdaten möglicherweise künslich vergrößern werden könnten, wurde dies untersucht.
+\\
+Alle im folgenden dargestellte Ergebnisse wurden auf denselben, den der historischen Diagrammswertelinien, Validationsdatensatz evaluiert. Um die Effizienz des erstellten Datensatzgenerators anschaulich zu machen wurde das auf den synthetischen Bildern vortrainiere Modell ebenfalls auf diesem Validationsdatensatz gemessen. Allerdings wurden hier keine herausragenden Evaluationswerte erwartet, da synthetische Datensätze in der Regel nicht die Qualität von realen Daten erreichen können.
+
 \begin{table}[H]
     \centering
-    \begin{tabular}{|l|c|c|c|}
-        \hline
-        \rowcolor[HTML]{EFEFEF}
-              & Precision & Recall  & F1-Score \\ \hline
-        Maske & 91.52\%   & 89.36\% & 90.43\%  \\ \hline
-    \end{tabular}
-    \caption{x}
+    \begin{minipage}{0.475\textwidth}
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \rowcolor[HTML]{EFEFEF}
+                  & Precision & Recall  & F1-Score \\ \hline
+            Maske & 75.55\%   & 66.19\% & 70.56\%  \\ \hline
+        \end{tabular}
+        \caption{Training auf synthetischem Datensatz}
+    \end{minipage}%
 \end{table}
+
+Die Tauglichkeit dieser künstlichen Herangehensweise zum lediglichen Vortrainieren spiegelt sich jedoch in den unteren Tabellen wider. Besonders der Precision Wert zwischen vor- und nicht vortrainierten Modellen zeigt Verbesserungen, hier in beiden Fällen von fast 1.5\%. Recall scheint davon nicht ganz betroffen zu sein, die Verbesserungen bei dem einen und Verschlechterungen bei dem anderen können allerdings der Zufälligkeitfaktoren des Trainings verschuldet sein. Die gleichen Auffälligkeiten können im Fall des Batch-Paddings gefunden werden.
+
+\begin{table}[H]
+    \centering
+    \begin{minipage}{0.475\textwidth}
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \rowcolor[HTML]{EFEFEF}
+                  & Precision & Recall  & F1-Score \\ \hline
+            Maske & 91.52\%   & 89.36\% & 90.43\%  \\ \hline
+        \end{tabular}
+        \caption{Training auf vortrainiertem Modell mit 32x Batch-Padding}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.475\textwidth}
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \rowcolor[HTML]{EFEFEF}
+                  & Precision & Recall  & F1-Score \\ \hline
+            Maske & 90.41\%   & 89.57\% & 89.99\%  \\ \hline
+        \end{tabular}
+        \caption{Training auf vortrainiertem Modell ohne 32x Batch-Padding}
+    \end{minipage}
+
+    \vspace{1.5em} % Adjust the spacing between the rows if needed
+
+    \begin{minipage}{0.475\textwidth}
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \rowcolor[HTML]{EFEFEF}
+                  & Precision & Recall  & F1-Score \\ \hline
+            Maske & 89.07\%   & 89.64\% & 89.35\%  \\ \hline
+        \end{tabular}
+        \caption{Training auf nicht vortrainiertem Modell mit 32x Batch-Padding}
+    \end{minipage}%
+    \hfill
+    \begin{minipage}{0.475\textwidth}
+        \centering
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \rowcolor[HTML]{EFEFEF}
+                  & Precision & Recall  & F1-Score \\ \hline
+            Maske & 88.05\%   & 88.88\% & 88.46\%  \\ \hline
+        \end{tabular}
+        \caption{Training auf nicht vortrainiertem Modell ohne 32x Batch-Padding}
+    \end{minipage}
+\end{table}
+
+
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{|l|c|c|c|}
+%         \hline
+%         \rowcolor[HTML]{EFEFEF}
+%               & Precision & Recall  & F1-Score \\ \hline
+%         Maske & 91.52\%   & 89.36\% & 90.43\%  \\ \hline
+%     \end{tabular}
+%     \caption{Training auf vortrainierten Modell mit 32x Batch-Padding}
+% \end{table}
+
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{|l|c|c|c|}
+%         \hline
+%         \rowcolor[HTML]{EFEFEF}
+%               & Precision & Recall  & F1-Score \\ \hline
+%         Maske & 90.41\%   & 89.57\% & 89.99\%  \\ \hline
+%     \end{tabular}
+%     \caption{Training auf vortrainierten Modell ohne 32x Batch-Padding}
+% \end{table}
+
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{|l|c|c|c|}
+%         \hline
+%         \rowcolor[HTML]{EFEFEF}
+%               & Precision & Recall  & F1-Score \\ \hline
+%         Maske & 89.07\%   & 89.64\% & 89.35\%  \\ \hline
+%     \end{tabular}
+%     \caption{Training auf nicht vortrainierten Modell mit 32x Batch-Padding}
+% \end{table}
+
+% \begin{table}[H]
+%     \centering
+%     \begin{tabular}{|l|c|c|c|}
+%         \hline
+%         \rowcolor[HTML]{EFEFEF}
+%               & Precision & Recall  & F1-Score \\ \hline
+%         Maske & 88.05\%   & 88.88\% & 88.46\%  \\ \hline
+%     \end{tabular}
+%     \caption{Training auf nicht vortrainierten Modell ohne 32x Batch-Padding}
+% \end{table}
 
 \section{Diagrammsauswertung}
 \subsection{Achsenerkennung durch OCR}
@@ -210,6 +314,8 @@ Die besseren Ergebnisse der Unterscheidung zwischen einer und mehreren Wertelini
     \end{tabular}
     \caption{Von den 27 Fehlern wegen fehlerhafter optischen Schriftzeichenerkennung}
 \end{table}
+
+
 
 
 \subsection{Numerische Tabellenformextraktion}
