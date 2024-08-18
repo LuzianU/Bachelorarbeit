@@ -36,15 +36,15 @@ Aufgrund der limitierten Anzahl an verfügbaren Validationsbildern bei einem so 
 Jedoch fällt die Verwechslung zwischen Balken und Histogramme in der Konfusionsmatrix trotzdem schnell auf. Grunsätzlich fallen die Evaluationswerte der Histogramm Klasse vergleichsweise schlechter aus, weshlab im Weiteren die manuelle Annotaiton ohne Unterscheidung zwischen Histogrammen und Balkendiagrammen fortgeführt wurde.
 \\
 Die Evaluation wurde mit einem Confidence Threshold von 40.4\% durchgeführt.
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=1\linewidth}
     \includegraphics[width=1\textwidth]{Experimente/img/detect/1_val@0.404_200_histo/konfusionsmatrix.png}
-    \caption{\hbadness=10000 x}
+    \caption{\hbadness=10000 Konfusionsmatrix des Modells, trainiert auf 200 Trainingsbildern mit Histogramme}
     \label{fig:extraction_output}
 \end{figure}
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|}
         \hline
@@ -57,22 +57,22 @@ Die Evaluation wurde mit einem Confidence Threshold von 40.4\% durchgeführt.
         Gemischt      & 60.00\%          & 50.00\%          & 54.55\%          \\ \hline
         \textbf{Alle} & \textbf{62.96\%} & \textbf{65.07\%} & \textbf{62.37\%} \\ \hline
     \end{tabular}
-    \caption{x}
+    \caption{Evaluationswerte des Modells, trainiert auf 200 Trainingsbildern mit Histogramme}
 \end{table}
 
 
 \subsection*{200 Trainingsbilder (ohne Histogramme)}
-Mit einem Konfidenzwert von 51.1\% wurden folgende Ergebnisse des Modells auf den Datensatz der reduzierten Klassenanzahl erziehlt. Auffallend sind nicht nur leichte Abweichungen der Linien und gemischten Klassen, welche der limitierten Evaluationsdatensatzgröße verschuldet sind, sondern auch deutliche Verbesserungen, der nun zusammengesetzten, Balkendiagrammsklasse.
+Mit einem Konfidenzwert von 51.1\% wurden folgende Ergebnisse des trainierten Modells auf den Datensatz der reduzierten Klassenanzahl erziehlt. Auffallend sind nicht nur, der limitierten Evaluationsdatensatzgröße verschuldet, leichte Abweichungen der Linien und gemischten Klassen, sondern auch deutliche Verbesserungen der nun zusammengesetzten Balkendiagramme.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=1\linewidth}
     \includegraphics[width=1\textwidth]{Experimente/img/detect/2_val@0.511_200_nohisto/konfusionsmatrix.png}
-    \caption{\hbadness=10000 x}
+    \caption{\hbadness=10000 Konfusionsmatrix des Modells, trainiert auf 200 Trainingsbildern ohne Histogramme}
     \label{fig:extraction_output}
 \end{figure}
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|}
         \hline
@@ -84,21 +84,21 @@ Mit einem Konfidenzwert von 51.1\% wurden folgende Ergebnisse des Modells auf de
         Gemischt      & 50.00\%          & 33.33\%          & 40.00\%          \\ \hline
         \textbf{Alle} & \textbf{72.37\%} & \textbf{64.90\%} & \textbf{67.21\%} \\ \hline
     \end{tabular}
-    \caption{x}
+    \caption{Evaluationswerte des Modells, trainiert auf 200 Trainingsbildern ohne Histogramme}
 \end{table}
 
-\subsection*{321 Trainingsbilder (ohne Histogramme)}
-TODO
+\subsection*{321 Trainingsbilder}
+Nach der Entscheidung Histrogramme und Balkendiagramme zu kombinieren, wurde mit dem finalen Datensatz von 321 annotierten Bildern schließlich das endgültige Modell vortrainiert. Da mit einem größeren Datensatz die Anzahl der Validationsbilder auch ansteigt, sind diese Evaluationen nun vertraulicher. Auffallend ist jedoch die deutlich schlechter ausfallende Recall Metrik bei dem gewählten Confidence Threshold von 65.3\%. Das Hauptziel dieses Modells ist jedoch lediglich das Vortrainieren, weshalb die vorliegenden Ergebnisse weniger kritisch begutachtet werden können als das eigentliche Feintrainierte Modell. Grundsätzlich ist jedoch herauszunehmen, dass eine Trainingsbildgröße von 321 ungenügend ist.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=1\linewidth}
     \includegraphics[width=1\textwidth]{Experimente/img/detect/3_val@0.653_nohisto/konfusionsmatrix.png}
-    \caption{\hbadness=10000 x}
+    \caption{\hbadness=10000 Konfusionsmatrix des Modells, trainiert auf 321 Trainingsbildern}
     \label{fig:extraction_output}
 \end{figure}
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|}
         \hline
@@ -110,23 +110,26 @@ TODO
         Gemischt      & 77.78\%          & 50.00\%          & 60.87\%          \\ \hline
         \textbf{Alle} & \textbf{77.96\%} & \textbf{62.22\%} & \textbf{68.83\%} \\ \hline
     \end{tabular}
-    \caption{x}
+    \caption{Evaluationswerte des Modells, trainiert auf 321 Trainingsbildern}
 \end{table}
 
 
 \subsection{Feintraining auf historische Wirtschaftsscans}
-TODO
+
+Im Anschluss wurde das vortrainierte Modell verwendet um das Feintrainieren auf dem erstellten Datensatz der historischen Wirtschaftsmagazine auszuführen.
+
 \subsection*{2444 Trainingsbilder}
-TODO
-\begin{figure}[h!]
+Die Metriken wurden mit einem Konfidenzwert von 89.1\% evaluiert. Aus der Konfusionsmatrix lassen sich die Klassenverteilungen ablesen, wobei die Liniendiagrammsklasse hier eindeutig überwiegt. Dies spiegelt sich auch in der Tabelle wieder, bei der nur bei der Klasse der Linien sich ein ausgewogener Precision und Recall Wert auslesen lässt. Die geringe Existenz der Nicht-Linien Diagramme in den Wirtschaftsscans lassen so nur die glaubwürdige Evaluation der Liniendiagramme selbst zu, welche mit einer Precision von 95.83\% und Recall von 94.52\% auch gute Ergebnisse liefert, weshlab im weiteren Verlauf der Arbeit sich nur auf die Auswertung dieser fokusiert wurde.
+
+\begin{figure}[H]
     \centering
     \captionsetup{width=1\linewidth}
     \includegraphics[width=1\textwidth]{Experimente/img/detect/val@0.891 20240612-093743_double/konfusionsmatrix.png}
-    \caption{\hbadness=10000 x}
+    \caption{\hbadness=10000 Konfusionsmatrix des feintrainierten Modells}
     \label{fig:extraction_output}
 \end{figure}
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|c|c|c|}
         \hline
@@ -138,13 +141,13 @@ TODO
         Gemischt      & 100.0\%          & 76.92\%          & 86.96\%          \\ \hline
         \textbf{Alle} & \textbf{97.40\%} & \textbf{81.09\%} & \textbf{88.11\%} \\ \hline
     \end{tabular}
-    \caption{x}
+    \caption{Evaluationswerte des feintrainierten Modells}
 \end{table}
 
 
 \section{Liniendiagrammsklassifizierung}
 
-Für die Liniendiagrammsklassifizierung wurden zwei Modelle jeweils auf die erstellten Klassifizierungsdatensätze aus \ref{ch:linebank} trainiert. Die Konfusionsmatrix \ref{fig:val_v1_matrix} macht die Schwierigkeit des Modells deutlich, überlappende und nicht überlappende Liniendiagramme zu differenzieren. Im Gegensatz zu \ref{fig:val_v2_matrix} werden hier 7 der insgesamt 19 nicht überlappenden Aufkommen falsch als überlappende Diagramme klassifiziert.
+Für die Liniendiagrammsklassifizierung wurden zwei Modelle jeweils auf die erstellten Datensätze aus \ref{ch:linebank} trainiert. Die Konfusionsmatrix \ref{fig:val_v1_matrix} macht die Schwierigkeit des Modells deutlich, überlappende und nicht überlappende Liniendiagramme zu differenzieren. Im Gegensatz zu \ref{fig:val_v2_matrix} werden hier 7 der insgesamt 19 nicht überlappenden Aufkommen falsch als überlappende Diagramme klassifiziert.
 
 \begin{figure}[h!]
     \centering
@@ -179,6 +182,7 @@ Die besseren Ergebnisse der Unterscheidung zwischen einer und mehreren Wertelini
 \end{table}
 
 \subsection{Semantische Segmentation durch das U-Net}
+\label{ch:eval_unet}
 
 Mit den genannten Parametern aus \ref{ch:unet} wurden insgesamt fünf verschiedene Modelle trainiert: Eines wurde auf den in \ref{ch:lines} beschriebenen Binärmaskendatensatz der Wertelinien von synthetischen Liniendiagrammen vortrainiert. Die restlichen vier Modelle wurden auf den Werteliniendatensatz der historischen Liniendiagrammen so trainiert, um jeweils den Vergleich zwischen dem Fein- und nicht Feintrainieren und der selbst eingeführten Beschreibung des \emph{32x Batch-Paddings} darzustellen. Was dieses Batch-Padding beschreibt ist lediglich die 32-fache Duplikation aller einzelnen Trainingsdatenbilder. Da jeder einzelne Bilderbatch während des Trainingsprozesses zufällig neu augmentiert wird, und so durch das Batch-Padding die limitierten Trainingsdaten möglicherweise künslich vergrößern werden könnten, wurde dies untersucht.
 \\
@@ -254,6 +258,7 @@ Die Tauglichkeit dieser künstlichen Herangehensweise zum lediglichen Vortrainie
 Da sich die Diagrammauswertung aus der Werteliniensegmentation und Achsenerkennung durch OCR zusammensetzt wurde nach obiger Evaluation des U-Nets ebenfalls die Effizienz des anderen Algorithmusteils beurteilt. Abgerundet wird das Kapitel der Experimente mit der Analyse des Diagrammauswertungsalgorithmus im Ganzen.
 
 \subsection{Achsenerkennung durch OCR}
+\label{ch:eval_ocr}
 
 Die Funktionsweise der Achsenerkennung durch optischer Schriftzeichenerkennung ist stark von der OCR selbst abhängig. Die Qualität der Erkennungen variiert stark durch die jeweilig verwendete OCR-Bibliothek, weswegen im Folgenden evaluierte Fehler in zwei, möglicherweise überlappende, Kategorien eingeteilt wurden. Diese bestehen aus den Fehlern des Algorithmus selbst, welche auch bei state-of-the-art Schriftzeichenerkennungsmethoden aufkommen würden. Da der Algorithmus das Auffinden der X-Achse im unteren Bildrand annimt, kommen eventuelle Fehler dieser Kategorie durch Diagramme mit anderen X-Achsen Positionen auf. Die andere Fehlergruppe sind der optischen Schriftzeichenerkennung selbst verschuldet, welche in Theorie durch eine bessere OCR-Bibliothek negiert werden kann.
 \\
@@ -283,10 +288,9 @@ Es wurden 53 zufällige Diagramme manuell evaluiert, bei denen insgesamt 26 davo
     \label{tb:ocr2}
 \end{table}
 
-
-
-
 \subsection{Numerische Tabellenformextraktion}
+
+Letztendlich wurde der kombinierte und gesamte Tabellenformextraktionsalgorithmus evaluiert. Da der Algorithmus jedoch mit einigen Einschränkungen entworfen und seine einizgen Komponenten bereits oben in ausgewertet wurden, wurde die Entscheidung getroffen
 
 
 

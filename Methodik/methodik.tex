@@ -3,24 +3,22 @@
 
 \section{Extraktion von Diagrammen aus Texten}
 
-Ziel des ersten Teils ist die Extraktion der Diagrammen aus den historischen Textscans, welche dann im folgenden Teil in eine gewünschte Form ausgewertet werden können.
-\\
-Die Wesentlichen Schritte des Extraktionsteils beinhalten die Objekterkennung, also die Bestimmung des Begrenzungsrechtecks (bounding box) der Diagrammen innerhalb den vorliegenden Vollseitscans und deren Unterscheidung in verschiedene Diagrammtypen, beispielsweise Linien- und Balkendiagrammen.
-Die erkannten Liniendiagramme werden anschließend anhand ihrer Auswertungsschwierigkeit klassifiziert, etwa durch Kennzeichnung deren Diagrammen, welche kontextbedingt gruppiert wurden, zum Beispiel aufgrund gemeinsamer Graphsachsen.
+Ziel des ersten Teils ist die Extraktion der Diagramme aus den historischen Textscans, welche dann im folgenden Teil in eine gewünschte Form ausgewertet werden können.
 
-% \subsection{Erkennung von Diagrammen in Texten}
+Die wesentlichen Schritte des Extraktionsteils beinhalten die Objekterkennung, also die Bestimmung des Begrenzungsrechtecks (bounding box) der Diagramme innerhalb der vorliegenden Vollseitscans und deren Unterscheidung in verschiedene Diagrammtypen, beispielsweise Linien- und Balkendiagramme.
+Die erkannten Liniendiagramme werden anschließend anhand ihrer Auswertungsschwierigkeit klassifiziert, etwa durch Kennzeichnung der Diagramme, welche kontextbedingt gruppiert wurden, zum Beispiel aufgrund gemeinsamer Graphachsen.
+
 Um mit Hilfe von Deep-Learning Modelle zu trainieren, werden annotierte Grundwahrheiten (ground truth) benötigt.
-
 \subsection{Datensatz DocBank zur Objekterkennung}
 \label{ch:chartbank}
 
-Für die Erkennung von Diagrammen in Texten wurden DocBank \cite{li2020docbank} und ein Anteil der historischen Wirtschaftsscans verwendet. DocBank besteht aus wissenschaftliche Publikation mit computergenerierten Grafiken zusammengesetzt, weshalb DocBanks Dokumentenseiten lediglich zum Vortrainieren des Detektionsmodells gedacht sind. Beabsichtigt wurde dieser Prozess des Vortrainierens um das System schneller und algemeingültiger, also mit besseren Voraussagen, trainieren zu können. Spätere Experimente untersuchen diese Annahme.
+Für die Erkennung von Diagrammen in Texten wurden DocBank \cite{li2020docbank} und ein Anteil der historischen Wirtschaftsscans verwendet. DocBank besteht aus wissenschaftlichen Publikationen mit computergenerierten Grafiken, weshalb DocBanks' Dokumentenseiten lediglich zum Vortrainieren des Detektionsmodells gedacht sind. Beabsichtigt wurde dieser Prozess des Vortrainierens, um das System schneller und allgemeingültiger, also mit besseren Vorhersagen, trainieren zu können. Spätere Experimente untersuchen diese Annahme.
 \\
 An die Vorkommenshäufigkeit angepasst, wurde die Differenzierung zuerst in fünf Objektklassen beschlossen: Linien, Balken, Histogramme, Sonstige und Gemischte. Da jedoch im Verlauf der Experimente nicht genügend Histogramm-Klassen vorhanden waren, wurden die Datensätze auf vier Klassen reduziert, indem Balkendiagramme und Histogramme vereinigt wurden.
 \\
-Die Überlegung zwischen Balkendiagrammen und Histogrammen zu unterscheiden beruhte darauf, dass Balkendiagramme kategorische Datenvergleiche anschaulich machen, bei denen die Balkenanordnung irrelevant ist, während Histogramme kontinuierliche, numerische Daten darstellen. Die Differenz liegt allerdings lediglich an der Achsenbeschreibung und nicht an visuellen Hinweisen, oftmals werden Balkendiagramme jedoch mit Lücken zwischen den Balken dargestellt, während Histogramme lückenlos abgebildet werden; dies ist jedoch nicht ausschlaggebend zur Bestimmung des Diagrammtyps.
+Die Überlegung, zwischen Balkendiagrammen und Histogrammen zu unterscheiden, beruhte darauf, dass Balkendiagramme kategorische Datenvergleiche anschaulich machen, bei denen die Balkenanordnung irrelevant ist, während Histogramme kontinuierliche, numerische Daten darstellen. Die Differenz liegt allerdings lediglich an der Achsenbeschreibung und nicht an visuellen Hinweisen, oftmals werden Balkendiagramme jedoch mit Lücken zwischen den Balken dargestellt, während Histogramme lückenlos abgebildet werden; dies ist jedoch nicht ausschlaggebend zur Bestimmung des Diagrammtyps.
 \\
-Für die manuell GT-Annotation der DocBank Dokumentenseiten, sowie folgender anderer Datensätze, wurde die Annotationssoftware CVAT \cite{CVAT_ai_Corporation_Computer_Vision_Annotation_2023} verwendet.
+Für die manuelle GT-Annotation der DocBank Dokumentenseiten, sowie folgender anderer Datensätze, wurde die Annotationssoftware CVAT \cite{CVAT_ai_Corporation_Computer_Vision_Annotation_2023} verwendet.
 
 \begin{figure}[h!]
     \centering
@@ -30,10 +28,11 @@ Für die manuell GT-Annotation der DocBank Dokumentenseiten, sowie folgender and
     \label{fig:docbank_example}
 \end{figure}
 
-Da der Datensatz aus einer beträchtlich diversen Menge verschiedener wissenschaftlichen Publikationen besteht, beinhalten diese auch zahlreich verschiedene Diagrammlayouts. Um eine bestmögliche Konsitenz und Nützlichkeit in der Handannotation zu gewährleisten wurden einige Überlegungen gemacht: Da einige Abbildungen als Gruppe von Diagrammen fungieren, siehe Abbildung \ref{fig:docbank_example}, muss die generelle Entscheidung getroffen werden, jedes Diagramm der Gruppe einzeln zu annotieren oder lediglich die gesamte Gruppe zusammen. Beide Möglichkeiten liefern Vor- und Nachteile; beim getrennten Annotieren muss die Gruppe in einem späteren Schritt nicht mehr in die einzelnen Diagramme aufgeteilt werden, jedoch können auch kontextbedingte Informationen verloren gehen, wie in dem abgebildeten Beispiel die Y-Achsenbeschreibung des mittleren Diagramms (B), welches sich eine gemeinsame Y-Achsenbeschriftung mit dem linken Diagram (A) teilt.
-Ebenfalls können Diagrammgruppen aus verschiedenen Diagrammtypen bestehen, etwa Histogramme und Liniendiagramme beieinander, weswegen dementsprechend für genau diesen Fall die gemischte Diagrammklasse eingeführt wurde. Bei weiteren Unklarheiten des Gruppenumfangs wurde sich sonst immer an die darunterliegenden Abbildungsunterschrift gehalten.
+Da der Datensatz aus einer beträchtlich diversen Menge verschiedener wissenschaftlicher Publikationen besteht, beinhalten diese auch zahlreich verschiedene Diagrammlayouts. Um eine bestmögliche Konsistenz und Nützlichkeit in der Handannotation zu gewährleisten, wurden einige Überlegungen gemacht: Da einige Abbildungen als Gruppe von Diagrammen fungieren, siehe Abbildung \ref{fig:docbank_example}, muss die generelle Entscheidung getroffen werden, jedes Diagramm der Gruppe einzeln zu annotieren oder lediglich die gesamte Gruppe zusammen. Beide Möglichkeiten liefern Vor- und Nachteile; beim getrennten Annotieren muss die Gruppe in einem späteren Schritt nicht mehr in die einzelnen Diagramme aufgeteilt werden, jedoch können auch kontextbedingte Informationen verloren gehen, wie in dem abgebildeten Beispiel die Y-Achsenbeschreibung des mittleren Diagramms (B), welches sich eine gemeinsame Y-Achsenbeschriftung mit dem linken Diagramm (A) teilt.
 \\
-Insgesamt wurden 321 Seiten annotiert, beinhaltend aus 105 Liniendiagrammen, 115 Balkendiagrammen (vereinigt mit Histogrammen), 79 sonstige und 66 gemischte Diagrammen.
+Ebenfalls können Diagrammgruppen aus verschiedenen Diagrammtypen bestehen, etwa Histogramme und Liniendiagramme beieinander, weswegen dementsprechend für genau diesen Fall die gemischte Diagrammklasse eingeführt wurde. Bei weiteren Unklarheiten des Gruppenumfangs wurde sich sonst immer an die darunterliegende Abbildungsunterschrift gehalten.
+\\
+Insgesamt wurden 321 Seiten annotiert, beinhaltend 105 Liniendiagramme, 115 Balkendiagramme (vereinigt mit Histogrammen), 79 sonstige und 66 gemischte Diagramme.
 
 \subsection{Datensatz historischer Wirtschaftsscans zur Objekterkennung}
 \label{ch:scanbank}
@@ -46,14 +45,15 @@ Insgesamt wurden 321 Seiten annotiert, beinhaltend aus 105 Liniendiagrammen, 115
     \label{fig:scanbank_example}
 \end{wrapfigure}
 
-Die Scans der geschichtlichen Wirtschaftsmagazine wurden mit ähnlichen Überlegungen annotiert. Hier befinden sich ebenfalls Diagrammgruppen, teils auch mit mehreren verschiedenen Diagrammtypen, siehe Abbildung \ref{fig:scanbank_example}, welche alle wieder als gesamte Gruppe annotiert wurden. Bis auf sehr wenigen Ausnahmen, befinden sich alle Abbildungen in den Scans visuell eingerahmt. Da die Ausrichtung derer jedoch nie wirklich perfekt gerade dargestellt wurde, und somit, der Ausrichtung verschuldet, kein Annotationsrechteck mit ausgeschlossenem Abbildungsrahmen gezeichnet werden kann wurde die Entscheidung getroffen, jede Annotation mit allen Ecken der Diagrammrahmen zu beinhalten. Grunsätzlich wurden alle Abbildungen, Diagramme oder nicht, wie etwa vereinzelte Karikaturen oder Landedskarten mit in die Klasse der sonstigen Diagramme eingeschlossen um so die allgemeine Erkennung von seltenen Diagrammtypen zu verstärken.
-Es wurden insgesamt 2391 zufällige Seiten ausgewählt und manuell annotiert, woraus sich 343 Liniendiagramme, 102 Balkendiagramme, 77 sonstige und 52 gemischte Diagramme ergebten.
+Die Scans der geschichtlichen Wirtschaftsmagazine wurden mit ähnlichen Überlegungen annotiert. Hier befinden sich ebenfalls Diagrammgruppen, teilweise auch mit mehreren verschiedenen Diagrammtypen, siehe Abbildung \ref{fig:scanbank_example}, welche alle wieder als gesamte Gruppe annotiert wurden. Bis auf sehr wenige Ausnahmen befinden sich alle Abbildungen in den Scans visuell eingerahmt. Da die Ausrichtung dieser jedoch nie wirklich perfekt gerade dargestellt wurde, und somit, der Ausrichtung verschuldet, kein Annotationsrechteck mit ausgeschlossenem Abbildungsrahmen gezeichnet werden kann, wurde die Entscheidung getroffen, jede Annotation mit allen Ecken der Diagrammrahmen zu beinhalten. Grundsätzlich wurden alle Abbildungen, Diagramme oder nicht, wie etwa vereinzelte Karikaturen oder Landkarten mit in die Klasse der sonstigen Diagramme eingeschlossen, um so die allgemeine Erkennung von seltenen Diagrammtypen zu verstärken.
+\\
+Es wurden insgesamt 2391 zufällige Seiten ausgewählt und manuell annotiert, woraus sich 343 Liniendiagramme, 102 Balkendiagramme, 77 sonstige und 52 gemischte Diagramme ergaben.
 
 \clearpage
 \section{Schwierigkeitsklassifizierung von Liniendiagrammen}
 \label{ch:linebank}
 
-Aufgrund der überwiegenden Liniendiagrammen in den historischer Wirtschaftsscans, wurde sich im Folgenden primär auf die Auswertung der Liniendiagrammen fokusiert.
+Aufgrund der überwiegend vorkommenden Liniendiagramme in den historischen Wirtschaftsscans wurde sich im Folgenden primär auf die Auswertung der Liniendiagramme fokusiert.
 \\
 Für genau diese Auswertung wurde der Vorverarbeitungsschritt überlegt, die extrahierten Liniendiagramme in verschiedene Untergruppen zu unterteilen. Es wurden vier Klassifikationen gewählt; Liniendiagramme mit nur einer Wertelinie, aus zusammengesetzten Diagrammen, also Liniendiagrammsgruppen, sich nicht überlappenden Wertelinien und sich überlappenden Wertelinien.
 
@@ -77,29 +77,29 @@ Für genau diese Auswertung wurde der Vorverarbeitungsschritt überlegt, die ext
     \begin{minipage}{0.475\textwidth} % First figure
         \centering
         \includegraphics[width=\linewidth]{Methodik/img/linebank_non_overlapping.png}
-        \caption{\hbadness=10000 Liniendiagramm mit sich nicht überlappenden Wertelinie}
+        \caption{\hbadness=10000 Liniendiagramm mit sich nicht überlappenden Wertelinien}
         \label{fig:linebank_non_overlapping}
     \end{minipage}\hfill % Add space between figures
     \begin{minipage}{0.475\textwidth} % Second figure
         \centering
         \includegraphics[width=\linewidth]{Methodik/img/linebank_overlapping.png}
-        \caption{\hbadness=10000 Liniendiagramm mit sich überlappenden Wertelinie}
+        \caption{\hbadness=10000 Liniendiagramm mit sich überlappenden Wertelinien}
         \label{fig:linebank_overlapping}
     \end{minipage}
 \end{figure}
 Es existieren nämlich Liniendiagrammsgruppen mit mehreren eigenständigen Unterdiagrammen, welche möglicherweise jeweils ihre eigene Achsenbeschreibung haben, oder auch sich kontextbedingt diese Achsenbeschriftungen teilen. Diese müssen also im Vergleich zu einfachen Liniendiagrammen speziell behandelt werden. Aber auch wenn für Liniendiagramme mit nur einer oder sich nicht überschneidenden Wertelinien ein eher primitiver Extraktionsalgorithmus ausreichen würde, tritt bei komplexeren, sich überlappenden oder überschneidenden Wertelinien schnell das Problem der Linientrennung bzw. Liniengruppierung auf.
 \\
-Der erstellte Datensatz für die Schwierigkeitsklassifizierung besteht aus 807 klassifizierten Liniendiagrammen, unterteilt auf 93 mit einer Wertelinie, 284 zusammengesetzte, 94 nicht überlappendene und 336 überlappende Liniendiagramme.
+Der erstellte Datensatz für die Schwierigkeitsklassifizierung besteht aus 807 klassifizierten Liniendiagrammen, unterteilt auf 93 mit einer Wertelinie, 284 zusammengesetzte, 94 nicht überlappende und 336 überlappende Liniendiagramme.
 \\
-Eine zweite Version des Datensatzes wurde ebenfalls erstellt. Bei diesem wurde aufgrund späteren Klassifizierungsproblemen von sich nicht überlappenden mit überlappenden Wertelinien, beide Klassen in die gemeinsame Differenzierung der Liniendiagrammen mit mehreren Wertelinien vereinigt. Dementsprechend besteht die zweite Version des Datensatzes aus 430 Instanzen dieser Klasse.
+Eine zweite Version des Datensatzes wurde ebenfalls erstellt. Bei dieser wurde aufgrund späterer Klassifizierungsprobleme von sich nicht überlappenden mit überlappenden Wertelinien beide Klassen in die gemeinsame Differenzierung der Liniendiagramme mit mehreren Wertelinien vereinigt. Dementsprechend besteht die zweite Version des Datensatzes aus 430 Instanzen dieser Klasse.
 
 \section{Auswertung von Liniendiagrammen}
 
-Für die Auswertung der historischen Liniendiagramme wurden Überlegungen gemacht, Beschriftungen und vorallem das Hintergrundgitter, welches sich in jedem Diagramm zu finden lässt, zu entfernen, jedoch wurde schnell klar, dass diese primitive Herangehensweise grundsätzlich eher impraktibel ist. Zum einen führen die nicht genau senkrecht und waagerecht verlaufenden Gitterlinien die korrekte Erkennung dieser zu einem nichttrivialem Erkennungsproblem und zum andern überlappen und verlaufen viele Wertelinien auf dem Gitter, sodass die einfache Entfernung der Gitterlinienpixel das Diagramm mit unzähligen Lücken verbleiben lässt. Dementsprechend wurde beschlossen, statt aus dem Diagramm alles bis auf die Wertelinien zu entfernen, die Wertelinien selbst zu extrahieren, also sie durch Segmentation vom Hintergrundgitter und allen anderen Elementen zu trennen.
+Für die Auswertung der historischen Liniendiagramme wurden Überlegungen gemacht, Beschriftungen und vor allem das Hintergrundgitter, welches sich in jedem Diagramm zu finden lässt, zu entfernen, jedoch wurde schnell klar, dass diese primitive Herangehensweise grundsätzlich eher impraktikabel ist. Zum einen führen die nicht genau senkrecht und waagerecht verlaufenden Gitterlinien die korrekte Erkennung dieser zu einem nichttrivialen Erkennungsproblem und zum anderen überlappen und verlaufen viele Wertelinien auf dem Gitter, sodass die einfache Entfernung der Gitterlinienpixel das Diagramm mit unzähligen Lücken verbleiben lässt. Dementsprechend wurde beschlossen, statt aus dem Diagramm alles bis auf die Wertelinien zu entfernen, die Wertelinien selbst zu extrahieren, also sie durch Segmentation vom Hintergrundgitter und allen anderen Elementen zu trennen.
 \\
 Die manuelle Erstellung der Grundwahrheiten für die Werteliniensegmentation ist allerdings recht arbeitsaufwendig, weswegen zusätzlich ein synthetisch erstellter Datensatz generiert wurde, bei dem die Erstellung von Binärmasken der Wertelinien trivial ausfällt.
 \\
-Im Folgenden wird die Datensatzerstellung für die sowohl semantischer Segmentation, als auch Instanzsegmentation beschrieben. Die semantische Segementation benötigt pro Klasse nur eine gemeinsame Binärmaske, unabhängigt von der Anzahl der Objekte, also in dem Fall der Werteliniensegmentation eine Maske pro Liniendiagramm. In dem Fall der Instanzsegmentation dagegen, wird nicht nur eine eigene Maske pro jeweiliges Objektaufkommen - pro Objektinstanz - erfordert.
+Im Folgenden wird die Datensatzerstellung für die sowohl semantische Segmentation als auch Instanzsegmentation beschrieben. Die semantische Segmentation benötigt pro Klasse nur eine gemeinsame Binärmaske, unabhängig von der Anzahl der Objekte, also in dem Fall der Werteliniensegmentation eine Maske pro Liniendiagramm. In dem Fall der Instanzsegmentation dagegen wird nicht nur eine eigene Maske pro jeweiliges Objektaufkommen - pro Objektinstanz - erfordert.
 
 \clearpage
 
@@ -122,7 +122,7 @@ Im Folgenden wird die Datensatzerstellung für die sowohl semantischer Segmentat
     \end{minipage}
 \end{figure}
 
-Der synthetische Datensatz besteht aus 2000 verschiedenen, zufällig generierten Liniendiagrammen. Diese beinhalten zufällige Wertelinien und Gitterlinien, sowohl in Position als auch in Liniendicke und beliebige, teils den Wertelinien überlappenden, Textbeschriftungen vielfältiger Schrifgrößen und Schriftarten. Da beim Generierungsprozess alle Diagrammswerte natürlicherweise bekannt sind, können diese einfach auf einem zweiten, leeren Bild übertragen werden, um so die zugehörige Wertelinienbinärmaske der semantischen Segmentation zu erstellen. Für die Instanzsegmentation dagegen, können diese auf getrennte Bilder gezeichnet werden. Je nach Implementation werden oftmals auch keine Binärmasken bei der Instanzsegmentation verwendet, sondern stattdessen Annotation im Format von Polygonumzeichnungen. Ist dies der Fall, können die getrennten Wertelinienbinärmasken unter anderem mit Hilfe von Konturerkennung in das gewünschte Polygonannotationsformat gebracht werden. Nachbearbeitet wurden die generierten Liniendiagramme am Ende mit unterschiedlichem Bildrauschen, um so näher an die Scanqualität und Diversität der historischen Diagramme heranzukommen.
+Der synthetische Datensatz besteht aus 2000 verschiedenen, zufällig generierten Liniendiagrammen. Diese beinhalten zufällige Wertelinien und Gitterlinien, sowohl in Position als auch in Liniendicke und beliebige, teils den Wertelinien überlappende, Textbeschriftungen vielfältiger Schriftgrößen und Schriftarten. Da beim Generierungsprozess alle Diagrammswerte natürlicherweise bekannt sind, können diese einfach auf einem zweiten, leeren Bild übertragen werden, um so die zugehörige Wertelinien-Binärmaske der semantischen Segmentation zu erstellen. Für die Instanzsegmentation dagegen können diese auf getrennte Bilder gezeichnet werden. Je nach Implementation werden oftmals auch keine Binärmasken bei der Instanzsegmentation verwendet, sondern stattdessen Annotationen im Format von Polygonumrissen. Ist dies der Fall, können die getrennten Wertelinien-Binärmasken unter anderem mit Hilfe von Konturenerkennung in das gewünschte Polygonannotationsformat gebracht werden. Nachbearbeitet wurden die generierten Liniendiagramme am Ende mit unterschiedlichem Bildrauschen, um so näher an die Scanqualität und Diversität der historischen Diagramme herankommen zu können.
 
 \clearpage
 
@@ -145,4 +145,4 @@ Der synthetische Datensatz besteht aus 2000 verschiedenen, zufällig generierten
     \end{minipage}
 \end{figure}
 
-Die manuelle Erstellung der Wertelinienbinärmasken der historischen Liniendiagrammen fällt dagegen nicht ganz so leicht aus. Für die Anfertigung der Werteliniengrundwahrheiten wurde das Originalbild in einem Bildbearbeitungsprogramm \cite{photopea} geöffnet und pro Wertelinie eine eigene Bildschicht (layer) hinzugefügt. In jeder dieser einzelnen Schichten kann dann die jeweilige Wertelinine überzeichnet - abgepaust - werden. Der Grund jede Wertelinie in ihre eigene Maskenschicht zu übertragen ist der, dass am Ende einfach alle Schichten getrennt exportiert werden können. Für die semantische Segementation ist dies allerdings nicht nötig, da pro Klasse nur eine gemeinsame Binärmaske verwendet wird. Hier können jedoch dann ganz einfach alle exportierten Schichten in eine gemeinsame Maske vereinigt werden. In dem Fall der Instanzsegmentation dagegen wird eben nicht nur eine vereinigte Binärmaske pro Klase benötigt, sondern eine eigene Maske pro Objektinstanz - pro Wertelinie. Dementsprechend können hierfür die getrennten Maskenschichten verwendet werden. Werden hierfür wieder die Grundwahrheiten im Polygonannotationsformat erfordert, können diese, wie zuvor beschreiben, durch Konturerkennung von der Binärmask konvertiert werden.
+Die manuelle Erstellung der Wertelinien-Binärmasken der historischen Liniendiagramme fällt dagegen nicht ganz so leicht aus. Für die Anfertigung der Werteliniengrundwahrheiten wurde das Originalbild in einem Bildbearbeitungsprogramm \cite{photopea} geöffnet und pro Wertelinie eine eigene Bildschicht (layer) hinzugefügt. In jeder dieser einzelnen Schichten kann dann die jeweilige Wertelinie überzeichnet - abgepaust - werden. Der Grund, jede Wertelinie in ihre eigene Maskenschicht zu übertragen, ist der, dass am Ende einfach alle Schichten getrennt exportiert werden können. Für die semantische Segmentation ist dies allerdings nicht nötig, da pro Klasse nur eine gemeinsame Binärmaske verwendet wird. Hier können jedoch dann ganz einfach alle exportierten Schichten in eine gemeinsame Maske vereinigt werden. In dem Fall der Instanzsegmentation dagegen wird eben nicht nur eine vereinigte Binärmaske pro Klasse benötigt, sondern eine eigene Maske pro Objektinstanz - pro Wertelinie. Dementsprechend können hierfür die getrennten Maskenschichten verwendet werden. Werden hierfür wieder die Grundwahrheiten im Polygonannotationsformat erfordert, können diese, wie zuvor beschrieben, durch Konturenerkennung von der Binärmaske konvertiert werden.
