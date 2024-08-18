@@ -50,7 +50,7 @@ Der Trainingsvorgang der Schwierigkeitsklassifizierung der Liniendiagrammen folg
 
 Auch wenn das Löschen zufälliger Bereiche im Bild möglicherweise kontraproduktiv wirkt, erziehlte die Verwendung dieser Technik zu besseren Ergebnissen, weshalb sie mit einbezogen wurde. Die restlichen Augmentierungen wurden für die breitere Diagrammsvarianz gewählt.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/classify_train_batch.jpg}
@@ -74,7 +74,7 @@ Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen, als 
     \item Überlagern von Bildern (Mixup, 0.5)
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/instance_annotated.png}
@@ -116,7 +116,7 @@ Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelese
 
 Es wurde eingerichtet, dass die Trainingsbilder samt ihrer zugehörigen Binärmasken jeweils pro Batch neu augmentiert werden. Der Validationsdatensatz dagegen wurde unaugmentiert verarbeitet. Durch Abspeichern der einzelnen Bilderbatches konnte der fehlerfreie Augmentierungsablauf manuell verifiziert werden.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/unet_training.png}
@@ -149,7 +149,7 @@ Aufgrund der, später sichtlich gemachten, souveräneren Ergebnisse des U-Nets i
 \\
 Der erste Schritt der Wertelinienextraktion ist die semantisch segmentierte Binärmaskenvorhersage des U-Nets zu skelettieren (skeletonize). Sowie alle anderen folgenden Bildbearbeitungsfunktionen wurde dieses Ausdünnen der Linien mit Hilfe der OpenCV Bibliothek erledigt. Um mögliche kleine Lücken zu füllen durchläuft die resultierende Maske eine schließende Morphologie (closing morphology) mit einer Kerngröße (kernel size) von 3x3 Pixel.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -177,7 +177,7 @@ Dieser Linientrennungsalgorithmus funktioniert wie folgt: Zuerst wird die gesamt
 \\
 Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pixelspalten der vorhergesagten Binärmaske durchlaufen. Ebenfalls wird wieder die Anzahl der Aufkommenden Wertelinien gezählt. Besitzt die jeweilige Pixelspalte nun dieselbe Anzahl an Linien wie die berechnete gesamte Linienanzahl, dann wird die \emph{i-te} sequentielle Gruppe an nicht-schwarzen Pixel der \emph{i-ten disjunkten Wertelinienbinärmaske} zugeordnet. Sollte dies allerdings nicht der Fall sein, wird die gesamte Pixelspalte in eine \emph{gemeinsam genutzte Binärmaske} übertragen.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -201,7 +201,7 @@ Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pix
 
 Somit können die Wertelinien anhand ihrer Position differenziert werden. Um nun die einzelnen kontinuierlichen Linienwerte zu extrahieren, müssen die disjunkten Binärmasken lediglich jeweils mit der gemeinsam genutzten Maske bitweise vereinigt werden. Durch die OpenCV Funktion des Auffindens verbundener Komponenten (connected components) wird anschließend die räumlich längste ausgewählt und der Mittelwert aller nicht-schwarzen Pixel pro Pixelspalte dieser Komponente berechnet. Um möglichem Rauschen zu entgegenwirken wird nach Gaußscher Weichzeichnung (gaussian blur) mit einem Kern von 5x5 Pixel die Positionssequenz jeder getrennten Wertelinie im Diagramm ermittelt.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -231,7 +231,7 @@ Für die optische Schriftzeichenerkennung wurde die JavaScript Bibliothek Chrome
 \\
 Nach dem alle erkannten OCR-Labels bereitgestellt wurden, werden diese mithilfe ihrer Mittelpunktpositionen in fünf disjunkte Gruppen eingeteilt: Titel, Linienbezeichnungen, linke Y-Achse, rechte Y-Achse und untere X-Achse.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/ocr.png}
@@ -246,7 +246,7 @@ Um den Diagrammstitel zu extrahieren werden die oberen Labels ausgewählt, die s
 
 Im Anschluss der Wertelinien- und Achsenbeschriftsextraktion kann das zu auswertende Liniendiagramm visualisiert und in Tabellenform ausgewertet werden. Für die grafische Darstellung wurde die Datenvisualisierungsbibliothek Matplotlib \cite{Hunter:2007} verwendet.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/extraction_input2.png}
@@ -256,7 +256,7 @@ Im Anschluss der Wertelinien- und Achsenbeschriftsextraktion kann das zu auswert
 
 Die extrahierten kontinuierlichen Linienwerte können nach vorherigem Skalieren, basierend auf der Bildgröße des Diagramms durch Matplotlib dargestellt werden. Jeder dieser Linien kann ein Bezeichnung zugeordnet werden, welche in der Legende aufgezählt wird. Zudem kann der Titel des Graphs (plot) gesetzt werden. Die Position der jeweiligen Achsenticks kann, wie vermerkt, durch die Mittelpunktpositionen der einzelnen eingeteilten Achsenbeschriftungen eingestellt werden, sowie deren jeweilige Labels. Pro X-Achsen Label wurde außerdem eine vertikale, gestrichelte Linie visualisert.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/extraction_output2.png}
@@ -266,7 +266,7 @@ Die extrahierten kontinuierlichen Linienwerte können nach vorherigem Skalieren,
 
 Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand. Für jedes Label der X-Achse wird dessen Schnittpunkt einer von ihrem Mittelpunkt aus verlaufenden, vertikalen Linie mit allen Werteliniensequenzen berechnet und der die räumliche Y-Position bestimmt. Anschließend wurde durch linearer Inter- und Extrapolation mithilfe der SciPy \cite{2020SciPy-NMeth} Bibliothek der genaue Y-Wert zwischen den Labelwerten der linken Y-Achse berechnet. Zu notieren ist hier, dass diese lineare Interpolation bei Diagrammen mit beispielsweise logarithmischer Skala zu Evaluationsfehlern führt. Diese Diagrammsform ist jedoch so gering vorkommend, weshalb diese fehlerbehaftete Herangehensweise akzeptabel erscheint. Zu visuellem Zweck wurden diese Schnittpunkte ebenfalls in dem grafisch dargestellten Graph veranschaulicht.
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|l|l|l|l|l|}
         \hline

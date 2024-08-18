@@ -1,14 +1,14 @@
 \chapter{Implementation}
 \label{ch:implementation}
 
-Die Implementation der verschiedenen Deep-Learning Bilderkennungsmethoden erfolgte durch die Verwendung des Ultralytics YOLO \cite{Jocher_Ultralytics_YOLO_2023} Frameworks und der Eigenimplementation der U-Net \cite{ronneberger2015unetconvolutionalnetworksbiomedical} Architektur. Alle folgenden Modelle wurden auf einer NVIDIA GeForce RTX 3090 mit 24252 MiB Grafikkartenspeicher trainiert.
+Die Implementation der verschiedenen Deep-Learning-Bilderkennungsmethoden erfolgte durch die Verwendung des Ultralytics YOLO \cite{Jocher_Ultralytics_YOLO_2023} Frameworks und der Eigenimplementation der U-Net \cite{ronneberger2015unetconvolutionalnetworksbiomedical} Architektur. Alle folgenden Modelle wurden auf einer NVIDIA GeForce RTX 3090 mit 24252 MiB Grafikkartenspeicher trainiert.
 
 \section{Ultralytics YOLO}
-Für die Extraktion von Diagrammen aus Texten, Schwierigkeitsklassifizierung von Liniendiagrammen und Instanzsegmentation der Wertelinien wurde das Ultralytics YOLO Framework verwendet. Es basiert auf der YOLO (You Only Look Once) Architektur, welche erstmal 2015 \cite{redmon2016lookonceunifiedrealtime} veröffentlicht wurde, und seit dem zehn Versionsiterationen durchlief. Unterstützt werden verschiedene Bild- und Videoerkennungsaufgaben, wie die Erkennung (detection), Segmentierung (segmentation), Posenschätzung (pose detection), Verfolgung (tracking) und Klassifizierung (classification). Das Ultralytics YOLO Framework ist anfängerfreundlich, die Verwendung erfolgt einfach, verfügt man bereits über einen annotierten Datensatz, kann mit lediglich einem Konsolenbefehl der Trainingsprozess des eigenen Modells gestartet werden. Ebenfalls verfügt es über der automatischen Datenagumentation während des Trainingsvorgangs und der Evaluation verschiedener Metriken des trainierenden und trainierten Modells.
+Für die Extraktion von Diagrammen aus Texten, Schwierigkeitsklassifizierung von Liniendiagrammen und Instanzsegmentation der Wertelinien wurde das Ultralytics YOLO Framework verwendet. Es basiert auf der YOLO (You Only Look Once) Architektur, welche erstmals 2015 \cite{redmon2016lookonceunifiedrealtime} veröffentlicht wurde und seitdem zehn Versionsiterationen durchlief. Unterstützt werden verschiedene Bild- und Videoerkennungsaufgaben, wie die Erkennung (detection), Segmentierung (segmentation), Posenschätzung (pose detection), Verfolgung (tracking) und Klassifizierung (classification). Das Ultralytics YOLO Framework ist anfängerfreundlich, die Verwendung erfolgt einfach, verfügt man bereits über einen annotierten Datensatz, kann mit lediglich einem Konsolenbefehl der Trainingsprozess des eigenen Modells gestartet werden. Ebenfalls verfügt es über die automatische Datenaugmentation während des Trainingsvorgangs und die Evaluation verschiedener Metriken des trainierenden und trainierten Modells.
 \\
-Ultralytics stellt zu dem Großteil der zehn YOLO Architekturen bereits vortrainierte herunterladbare Modelle bereit. Für das Vortrainieren der Objekterkennung, Klassifizierung und Instanzsegmentation wurde der COCO \cite{lin2015microsoftcococommonobjects} Datensatz verwendet, welcher aus über 200.000 Bildern besteht und  eingeteilt wurde auf 80 Objektklassen.
+Ultralytics stellt zu dem Großteil der zehn YOLO Architekturen bereits vortrainierte herunterladbare Modelle bereit. Für das Vortrainieren der Objekterkennung, Klassifizierung und Instanzsegmentation wurde der COCO \cite{lin2015microsoftcococommonobjects} Datensatz verwendet, welcher aus über 200.000 Bildern besteht und in 80 Objektklassen eingeteilt wurde.
 
-Diese werden außerdem in verschiedene Modellgrößen angeboten, sodass die Möglichkeit besteht zwischen Invarianzgeschwindigkeit, benötigte Gleitkommaoperationsleistungsfähigkeiten und verwendbaren Grafikkartenspeicher abwegegen zu können.
+Diese werden außerdem in verschiedene Modellgrößen angeboten, sodass die Möglichkeit besteht, zwischen Invarianzgeschwindigkeit, benötigter Gleitkommaoperationsleistungsfähigkeit und verwendbarem Grafikkartenspeicher abwägen zu können.
 \\
 Es wurden verschiedene YOLO Modelle verwendet, an denen jedoch keine Architekturänderungen vorgenommen wurden.
 Sofern im Weiteren nicht explizit angegeben, wurden die Grundeinstellungen des Ultralytics YOLO Frameworks benutzt. Die genaue Anzahl der Trainingsepochen variierte zwischen den einzelnen Trainingsvorgängen, da bei allen die Geduldseinstellung (patience) von 100 Epochen verwendet wurde. Um die Überanpassung (over-fitting) an den Trainingsdatensatz zu vermeiden, wird mit diesem Geduldsparameter das Training vorzeitig abgebrochen, solange in den letzten beliebigen Epochen das trainierende Modell keine Verbesserungen der Validationsmetriken aufweisen konnte.
@@ -16,11 +16,11 @@ Sofern im Weiteren nicht explizit angegeben, wurden die Grundeinstellungen des U
 \subsection{Objekterkennung zur Extraktion von Diagrammen aus Texten}
 \label{ch:objectdetection}
 
-Für die Erkennung aller Diagrammen in den Vollseitscans wurde das YOLOv9e Modell verwendet.
+Für die Erkennung aller Diagramme in den Vollseitscans wurde das YOLOv9e Modell verwendet.
 \\
-Zuerst wurde es auf den in \ref{ch:chartbank} beschreibenen, selbst erstellten DocBank Datensatz vortrainiert (pre-trained) und danach auf den Datensatz aus \ref{ch:scanbank}, der historischen Wirtschaftsscans, feintrainiert (fine-tuned). Beide Datensätze wurden mit der häufig verwendeten 80-20 Aufteilung differenziert. In diesem Fall werden 80\% des Datensatzes für das Trainieren und 20\% für das Evaluieren des Modells benutzt. Die hierbei 20\% des Evaluationssets bestehen aus Daten, welche das Modell vor dem Zeitpunkt noch nie gesehenen hat und dementsprechend unbekannt sind.
+Zuerst wurde es auf den in \ref{ch:chartbank} beschriebenen, selbst erstellten DocBank Datensatz vortrainiert (pre-trained) und danach auf den Datensatz aus \ref{ch:scanbank}, der historischen Wirtschaftsscans, feintrainiert (fine-tuned). Beide Datensätze wurden mit der häufig verwendeten 80-20 Aufteilung differenziert. In diesem Fall werden 80\% des Datensatzes für das Trainieren und 20\% für das Evaluieren des Modells benutzt. Die hierbei 20\% des Evaluationssets bestehen aus Daten, welche das Modell vor dem Zeitpunkt noch nie gesehen hat und dementsprechend unbekannt sind.
 \\
-Es wurde die Bildgröße von 1024x1024 Pixel verwendet und eine Batchgröße von 7 gewählt, da für eine höhere Batchgröße die verwendete Grafikkarte über ungenügend viel Speicher verfügte. Die von den Grundeinstellungen geänderten Parametern der Datenaugmentierung, mitsamt ihrer jeweiligen Wahrscheinlichkeiten, bestanden aus:
+Es wurde die Bildgröße von 1024x1024 Pixel verwendet und eine Batchgröße von 7 gewählt, da für eine höhere Batchgröße die verwendete Grafikkarte über ungenügend viel Speicher verfügte. Die von den Grundeinstellungen geänderten Parameter der Datenaugmentierung, mitsamt ihrer jeweiligen Wahrscheinlichkeiten, bestanden aus:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
     \item Farbmanipulation im HSV-Farbraum: Hue (1.0), Sättigung (1.0) und Helligkeit (0.5)
@@ -30,14 +30,15 @@ Es wurde die Bildgröße von 1024x1024 Pixel verwendet und eine Batchgröße von
     \item Überlagern von Bildern (Mixup, 1.0)
 \end{itemize}
 
-Gewählt wurden diese Augmentierungstechniken mit dem Ziel die universelle Erkennungsfähigkeiten des trainierted Modells zu stärken. Farbmanipulationen helfen dem Modell zuversichtlichere Vorhersagen auf einer breiten Spanne unterschiedlicher Papierhintergründe zu treffen, beziehungsweise Diagramme mit willkürlichen Farben besser zu erkennen.
+Gewählt wurden diese Augmentierungstechniken mit dem Ziel, die universellen Erkennungsfähigkeiten des trainierten Modells zu stärken. Farbmanipulationen helfen dem Modell, zuversichtlichere Vorhersagen auf einer breiten Spanne unterschiedlicher Papierhintergründe zu treffen beziehungsweise Diagramme mit willkürlichen Farben besser zu erkennen.
 
 \clearpage
 
 
 \subsection{Klassifizierung zur Schwierigkeitsbestimmung von Liniendiagrammen}
+\label{ch:classify}
 
-Der Trainingsvorgang der Schwierigkeitsklassifizierung der Liniendiagrammen folgte ähnlich der Objekterkennung aus \ref{ch:objectdetection}. Da hier das gewählte YOLOv8m-cls Modell nur Vorhersagen über bereits extrahierte Diagramme machen muss und nicht mehr über Vollseitscans, wurde die Bildgröße auf 640x640 Pixel reduziert. Im Vergleich zu der vorherigen Objekterkennung konnten keine Verbesserungen der Verwendung eines größeren Modells beobachtet werden, weshlab für die Klassifizierung lediglich das Modell mittlerer Größe gewählt wurde. Die Batchgröße dagegen wurde auf 16 erhöht und ebenfalls wurde wieder der Trainingsprozess durch den Geduldsparameter von 100 beendet, anstatt durch eine festgelegte Epochenbegrenzung. Die veränderten Augmentierungstechniken, sowie deren Parameter, bestanden aus:
+Der Trainingsvorgang der Schwierigkeitsklassifizierung der Liniendiagramme folgte ähnlich der Objekterkennung aus \ref{ch:objectdetection}. Da hier das gewählte YOLOv8m-cls Modell nur Vorhersagen über bereits extrahierte Diagramme machen muss und nicht mehr über Vollseitscans, wurde die Bildgröße auf 640x640 Pixel reduziert. Im Vergleich zu der vorherigen Objekterkennung konnten keine Verbesserungen der Verwendung eines größeren Modells beobachtet werden, weshalb für die Klassifizierung lediglich das Modell mittlerer Größe gewählt wurde. Die Batchgröße dagegen wurde auf 16 erhöht und ebenfalls wurde wieder der Trainingsprozess durch den Geduldsparameter von 100 beendet, anstatt durch eine festgelegte Epochenbegrenzung. Die veränderten Augmentierungstechniken sowie deren Parameter bestanden aus:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
     \item Farbmanipulation im HSV-Farbraum: Hue (1.0), Sättigung (1.0) und Helligkeit (0.5)
@@ -48,9 +49,9 @@ Der Trainingsvorgang der Schwierigkeitsklassifizierung der Liniendiagrammen folg
     \item Zufälliges Löschen (1.0)
 \end{itemize}
 
-Auch wenn das Löschen zufälliger Bereiche im Bild möglicherweise kontraproduktiv wirkt, erziehlte die Verwendung dieser Technik zu besseren Ergebnissen, weshalb sie mit einbezogen wurde. Die restlichen Augmentierungen wurden für die breitere Diagrammsvarianz gewählt.
+Auch wenn das Löschen zufälliger Bereiche im Bild möglicherweise kontraproduktiv wirkt, erzielte die Verwendung dieser Technik bessere Ergebnisse, weshalb sie mit einbezogen wurde. Die restlichen Augmentierungen wurden für die breitere Diagrammvarianz gewählt.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/classify_train_batch.jpg}
@@ -58,12 +59,12 @@ Auch wenn das Löschen zufälliger Bereiche im Bild möglicherweise kontraproduk
     \label{fig:classify_train_batch}
 \end{figure}
 
-Desweiteren wurde dieser beschriebene Trainingsprozess erneut auf der anderen Version, des in \ref{ch:linebank} beschriebenen, Datensatzes mit der Vereinigung der sich überlappenden und nicht überlappenden Wertelinien in die gemeinsame Klasse mehrerer Wertelinien trainiert.
+Des Weiteren wurde dieser beschriebene Trainingsprozess erneut auf der anderen Version des in \ref{ch:linebank} beschriebenen Datensatzes mit der Vereinigung der sich überlappenden und nicht überlappenden Wertelinien in die gemeinsame Klasse mehrerer Wertelinien trainiert.
 
 \subsection{Instanzsegmentation von Wertelinien in Liniendiagrammen}
 
-Die Instanzsegmentation durch Ultralytics YOLO erfolgte mithilfe der in \ref{ch:genlines} und \ref{ch:lines} definierten Datensätze der Wertelinien synthetischer und historischer Liniendiagramme. Wie zuvor beschrieben wurden diese zuerst in das, von dem Framework benötigte, Polygonannotationsformat konvertiert. Hierzu wurde Python 3.10.12 in Verbindung mit der Bildverarbeitungsbibliothek OpenCV \cite{opencv_library} verwendet. Die Korrektheit der Konvertation von den Binärmasken in Polygonform wurde durch den von Ultralytics erstellten Trainingsbatches, als auch durch Auswertung mithilfe der Annotationswebseite Roboflow \cite{dwyer2024roboflow} überprüft werden. Im Anschluss konnte das YOLOv8x-seg Model mit einer Bildgröße von 512x512 Pixel und Batchgröße von 16 trainiert werden. Der Trainingsprozess verlief erneut in zwei Schritten.
-Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen, als auch das Feintrainieren auf den  historischen Liniendiagrammen gewählt. Ebenfalls wurden für beie Trainingsprozesse dieselben Augmentierungstechniken verwendet:
+Die Instanzsegmentation durch Ultralytics YOLO erfolgte mithilfe der in \ref{ch:genlines} und \ref{ch:lines} definierten Datensätze der Wertelinien synthetischer und historischer Liniendiagramme. Wie zuvor beschrieben, wurden diese zuerst in das vom Framework benötigte Polygonannotationsformat konvertiert. Hierzu wurde Python 3.10.12 in Verbindung mit der Bildverarbeitungsbibliothek OpenCV \cite{opencv_library} verwendet. Die Korrektheit der Konvertierung von den Binärmasken in Polygonform wurde durch die von Ultralytics erstellten Trainingsbatches als auch durch Auswertung mithilfe der Annotationswebseite Roboflow \cite{dwyer2024roboflow} überprüft. Im Anschluss konnte das YOLOv8x-seg Modell mit einer Bildgröße von 512x512 Pixel und Batchgröße von 16 trainiert werden. Der Trainingsprozess verlief erneut in zwei Schritten.
+Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen als auch das Feintrainieren auf den historischen Liniendiagrammen gewählt. Ebenfalls wurden für beide Trainingsprozesse dieselben Augmentierungstechniken verwendet:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
     \item Farbmanipulation im HSV-Farbraum: Hue (1.0), Sättigung (1.0) und Helligkeit (0.5)
@@ -74,26 +75,26 @@ Diese Parameter wurden für sowohl das Vortrainieren auf den synthetischen, als 
     \item Überlagern von Bildern (Mixup, 0.5)
 \end{itemize}
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/instance_annotated.png}
-    \caption{\hbadness=10000 Annotierte Wertelinien der Liniendiagrammen zur Instanzsegmentation}
+    \caption{\hbadness=10000 Annotierte Wertelinien der Liniendiagramme zur Instanzsegmentation}
     \label{fig:instance_annotated}
 \end{figure}
 
-Hier wurden stärkere Augmentierungstechniken gewählt, da Wertelinien unabhängig von Positionskontexten ausfindig gemacht werden müssen, weshlab additionell höhere Rotations- und Spiegelungsparameter verwendet wurden.
+Hier wurden stärkere Augmentierungstechniken gewählt, da Wertelinien unabhängig von Positionskontexten ausfindig gemacht werden müssen, weshalb zusätzlich höhere Rotations- und Spiegelungsparameter verwendet wurden.
 
 
 \section{U-Net: Semantische Segmentation von Wertelinien}
 \label{ch:unet}
 
-Als Alternative zur Instanzsegmentation wurde ebenfalls die semantische Segmentation durch die Eigenimplementation der U-Net Architektur verwirklicht. Diese wurde speziell für die medizinisch Bildsegmentierung entwickelt und zeichnet sich besonders bei einer limitierten Anzahl von Trainingsdaten aus. Die Architektur des CNNs (convolutional neural network) kombiniert Encoder- und Decoderpfade mit Skip-Verbindungen um so präzise Segmentationsergebnisse zu erziehlen.
+Als Alternative zur Instanzsegmentation wurde ebenfalls die semantische Segmentation durch die Eigenimplementation der U-Net Architektur verwirklicht. Diese wurde speziell für die medizinische Bildsegmentierung entwickelt und zeichnet sich besonders bei einer limitierten Anzahl von Trainingsdaten aus. Die Architektur des CNNs (convolutional neural network) kombiniert Encoder- und Decoderpfade mit Skip-Verbindungen, um so präzise Segmentationsergebnisse zu erzielen.
 \\
 Implementiert wurde die Datenvorverarbeitung, das Modelltraining und die Evaluation mithilfe der Keras 3 API \cite{chollet2015keras}. Für die Augmentierung der Trainingsdaten wurde die Bibliothek Albumentations \cite{info11020125} genutzt. Lediglich der Code der U-Net Architektur selbst wurde in Form des Vanilla U-Nets \cite{zak2024kerasunet} übernommen.
 \\
 Der Ablauf des U-Net Trainings durchlief wie folgt:
-Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelesen. Im Fall der Binärmasken wurde der Schwellenwert (threshold) von 30\% genutzt. Nach der Deklaration der Modellarchitektur wurde die Datenagumentation definiert. Folgende Augmentierungstechniken wurden verwendet:
+Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelesen. Im Fall der Binärmasken wurde der Schwellenwert (threshold) von 30\% genutzt. Nach der Deklaration der Modellarchitektur wurde die Datenaugmentation definiert. Folgende Augmentierungstechniken wurden verwendet:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
     \item Spiegeln entlang der horizontalen Achse (\texttt{A.HorizontalFlip}, \texttt{p=0.5})
@@ -116,7 +117,7 @@ Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelese
 
 Es wurde eingerichtet, dass die Trainingsbilder samt ihrer zugehörigen Binärmasken jeweils pro Batch neu augmentiert werden. Der Validationsdatensatz dagegen wurde unaugmentiert verarbeitet. Durch Abspeichern der einzelnen Bilderbatches konnte der fehlerfreie Augmentierungsablauf manuell verifiziert werden.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/unet_training.png}
@@ -124,7 +125,7 @@ Es wurde eingerichtet, dass die Trainingsbilder samt ihrer zugehörigen Binärma
     \label{fig:unet_training}
 \end{figure}
 
-Nach diesem Implementationsschritt konnte der Trainingsprozess gestartet werden. Hierfür wurde ebenfalls, die für die Grafikkarte größtmöglichste Batchgröße von 7 verwendet, und ein Geduldsparameter von 100 Epochen genutzt, welcher das Training zum frühzeitigen Abbrechen (early stopping) führt. Als Überwachungsmetrik (monitor) dafür wurde der Trainingsverlust (training loss) gewählt; sobald dieser über die bestimmte Anzahl an Epochen nicht unterschritten wurde, beendet das Training vorzeitig. Aufgrund der Minimierungsoptimierung des verwendeten Adam Optimierers (optimizer) \cite{kingma2017adammethodstochasticoptimization} wurde dieser Trainings Loss als Negativ des Dice-Sørensen-Koeffizient (dice score) festgelegt, welcher ebenfalls als Validationsfunktion dient. Der Dice Score misst die Überlappung zwischen der Vorhersage und der Ground Truth, wobei ein Wert von 1 eine perfekte Übereinstimmung und 0 keine Übereinstimmung bedeutet. Als Learnrate (learning rate) wurde 0.0001 und als Dropout-Rate 0.0 gewählt. Für die genannten Validations- und Verlustfunktionen wurden folgende Formeln verwendet:
+Nach diesem Implementationsschritt konnte der Trainingsprozess gestartet werden. Hierfür wurde ebenfalls die für die Grafikkarte größtmögliche Batchgröße von 7 verwendet und ein Geduldsparameter von 100 Epochen genutzt, welcher das Training zum frühzeitigen Abbrechen (early stopping) führt. Als Überwachungsmetrik (monitor) dafür wurde der Trainingsverlust (training loss) gewählt; sobald dieser über die bestimmte Anzahl an Epochen nicht unterschritten wurde, beendet das Training vorzeitig. Aufgrund der Minimierungsoptimierung des verwendeten Adam Optimierers (optimizer) \cite{kingma2017adammethodstochasticoptimization} wurde dieser Trainings Loss als Negativ des Dice-Sørensen-Koeffizient (dice score) festgelegt, welcher ebenfalls als Validationsfunktion dient. Der Dice Score misst die Überlappung zwischen der Vorhersage und der Ground Truth, wobei ein Wert von 1 eine perfekte Übereinstimmung und 0 keine Übereinstimmung bedeutet. Als Lernrate (learning rate) wurde 0.0001 und als Dropout-Rate 0.0 gewählt. Für die genannten Validations- und Verlustfunktionen wurden folgende Formeln verwendet:
 
 % Dice Score Function
 \begin{equation}
@@ -141,15 +142,15 @@ Hierbei steht $y_{\text{true}}$ für die Grundwahrheiten und $y_{\text{pred}}$ f
 
 \section{Numerische Auswertung von Liniendiagrammen in Tabellenform}
 
-Um die historischen Liniendiagramme in Tabellenform auswerten zu können wurde die vorherig beschriebene U-Net Segmentierung mitbenutzt. Die generelle Idee des Auswertungsalgorithmus besteht aus der Kombination der, durch die implementierte Segmentierung möglichgemachte, Wertelinienerkennung und einer optischen Schriftzeichenerkennung (optical character recognition; OCR), aus welcher unter anderem Achsenbeschriftungen und deren numerischen Kontext extrahiert werden können. Umgesetzt wurde dieser Algorithmus ebenfalls der Programmiersprache Python. Im Folgenden wird die Funktionsweise des zweigeteilten Algorithmus im Nähren beschreiben.
+Um die historischen Liniendiagramme in Tabellenform auswerten zu können, wurde die vorherig beschriebene U-Net Segmentierung mitbenutzt. Die generelle Idee des Auswertungsalgorithmus besteht aus der Kombination der durch die implementierte Segmentierung möglich gemachten Wertelinienerkennung und einer optischen Schriftzeichenerkennung (optical character recognition; OCR), aus welcher unter anderem Achsenbeschriftungen und deren numerischer Kontext extrahiert werden können. Umgesetzt wurde dieser Algorithmus ebenfalls in der Programmiersprache Python. Im Folgenden wird die Funktionsweise des zweigeteilten Algorithmus im Näheren beschrieben.
 
 \subsection{Extraktion der segmentierten Wertelinien}
 
-Aufgrund der, später sichtlich gemachten, souveräneren Ergebnisse des U-Nets im Vergleich mit dem Ultralytics YOLO Segmentierungsmodell, wurde dieses für die Wertelinienextraktion verwendet. Allerdings verfügt das U-Net lediglich über die semantische Segmentierung, weshalb dies im Kontrast zu der Instanzsegmentation ein nicht triviales Hindernis aufwirft: Die semantische Segmentation kann nicht zwischen mehreren Wertelinien unterscheiden. Überschneiden oder Überlappen sich diese können die erkannten Linien vom Modell aus nicht differenziert werden. Dementsprechend muss die Wertelinientrennung in der Nachverarbeitung bewältigt werden.
+Aufgrund der später sichtlich gemachten souveräneren Ergebnisse des U-Nets im Vergleich mit dem Ultralytics YOLO Segmentierungsmodell wurde dieses für die Wertelinienextraktion verwendet. Allerdings verfügt das U-Net lediglich über die semantische Segmentierung, weshalb dies im Kontrast zu der Instanzsegmentation ein nicht triviales Hindernis aufwirft: Die semantische Segmentation kann nicht zwischen mehreren Wertelinien unterscheiden. Überschneiden oder überlappen sich diese, können die erkannten Linien vom Modell aus nicht differenziert werden. Dementsprechend muss die Wertelinientrennung in der Nachverarbeitung bewältigt werden.
 \\
-Der erste Schritt der Wertelinienextraktion ist die semantisch segmentierte Binärmaskenvorhersage des U-Nets zu skelettieren (skeletonize). Sowie alle anderen folgenden Bildbearbeitungsfunktionen wurde dieses Ausdünnen der Linien mit Hilfe der OpenCV Bibliothek erledigt. Um mögliche kleine Lücken zu füllen durchläuft die resultierende Maske eine schließende Morphologie (closing morphology) mit einer Kerngröße (kernel size) von 3x3 Pixel.
+Der erste Schritt der Wertelinienextraktion ist die semantisch segmentierte Binärmaskenvorhersage des U-Nets zu skelettieren (skeletonize). Sowie alle anderen folgenden Bildbearbeitungsfunktionen wurde dieses Ausdünnen der Linien mit Hilfe der OpenCV Bibliothek erledigt. Um mögliche kleine Lücken zu füllen, durchläuft die resultierende Maske eine schließende Morphologie (closing morphology) mit einer Kerngröße (kernel size) von 3x3 Pixel.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -171,13 +172,13 @@ Der erste Schritt der Wertelinienextraktion ist die semantisch segmentierte Bin�
     \end{minipage}
 \end{figure}
 
-Um das Problem der Linientrennung zu überwinden wurde die Entscheidung getroffen einen primitiven Algorithmus zu verwenden, welcher die Wertelinien anhand ihrer räumlichen Position im Diagramm willkürlich differenziert. Im Folgenden werden alle sich überschneidenden Wertelinien nach dieser Approximation getrennt. Dementsprechend wurde das anspruchsvolle Problem der Wertelinientrennung im Weiteren aufgrund seiner Komplexität und des begrenzten Rahmens dieser Arbeit nicht weiter eingehend behandelt.
+Um das Problem der Linientrennung zu überwinden, wurde die Entscheidung getroffen, einen primitiven Algorithmus zu verwenden, welcher die Wertelinien anhand ihrer räumlichen Position im Diagramm willkürlich differenziert. Im Folgenden werden alle sich überschneidenden Wertelinien nach dieser Approximation getrennt. Dementsprechend wurde das anspruchsvolle Problem der Wertelinientrennung im Weiteren aufgrund seiner Komplexität und des begrenzten Rahmens dieser Arbeit nicht weiter eingehend behandelt.
 \\
-Dieser Linientrennungsalgorithmus funktioniert wie folgt: Zuerst wird die gesamte Anzahl der Wertelinien ermittelt. Dazu wird für jede vertikale Pixelspalte des Bildes das Aufkommen von nicht-schwarzen Pixel gezählt. Da im Fall von vertikal verlaufenden Wertelinien mehrere von diesen aufeinanderfolgen können muss eine Gruppe an sequentiellen nicht-schwarzen Pixel als nur ein Aufkommen gewertet werden. Die berechneten Werte pro Pixelspalte werden daraufhin der Aufkommensgröße nach sortiert und die größten 5\% entfernt. Diese enthalten mögliche fehlerbehaftete Werte aufgrund eventueller Artefakte in der Werteliniensegmentation. Anschließend wird der verbleibende Maximalwert als gesamte Linienanzahl definiert.
+Dieser Linientrennungsalgorithmus funktioniert wie folgt: Zuerst wird die gesamte Anzahl der Wertelinien ermittelt. Dazu wird für jede vertikale Pixelspalte des Bildes das Aufkommen von nicht-schwarzen Pixeln gezählt. Da im Fall von vertikal verlaufenden Wertelinien mehrere von diesen aufeinanderfolgen können, muss eine Gruppe an sequentiellen nicht-schwarzen Pixeln als nur ein Aufkommen gewertet werden. Die berechneten Werte pro Pixelspalte werden daraufhin der Aufkommensgröße nach sortiert und die größten 5\% entfernt. Diese enthalten mögliche fehlerbehaftete Werte aufgrund eventueller Artefakte in der Werteliniensegmentation. Anschließend wird der verbleibende Maximalwert als gesamte Linienanzahl definiert.
 \\
-Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pixelspalten der vorhergesagten Binärmaske durchlaufen. Ebenfalls wird wieder die Anzahl der Aufkommenden Wertelinien gezählt. Besitzt die jeweilige Pixelspalte nun dieselbe Anzahl an Linien wie die berechnete gesamte Linienanzahl, dann wird die \emph{i-te} sequentielle Gruppe an nicht-schwarzen Pixel der \emph{i-ten disjunkten Wertelinienbinärmaske} zugeordnet. Sollte dies allerdings nicht der Fall sein, wird die gesamte Pixelspalte in eine \emph{gemeinsam genutzte Binärmaske} übertragen.
+Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pixelspalten der vorhergesagten Binärmaske durchlaufen. Ebenfalls wird wieder die Anzahl der aufkommenden Wertelinien gezählt. Besitzt die jeweilige Pixelspalte nun dieselbe Anzahl an Linien wie die berechnete gesamte Linienanzahl, dann wird die \emph{i-te} sequentielle Gruppe an nicht-schwarzen Pixeln der \emph{i-ten disjunkten Wertelinienbinärmaske} zugeordnet. Sollte dies allerdings nicht der Fall sein, wird die gesamte Pixelspalte in eine \emph{gemeinsam genutzte Binärmaske} übertragen.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -199,9 +200,9 @@ Nach Erhalt dieser berechneten Linienanzahl des Diagramms werden erneut alle Pix
     \end{minipage}
 \end{figure}
 
-Somit können die Wertelinien anhand ihrer Position differenziert werden. Um nun die einzelnen kontinuierlichen Linienwerte zu extrahieren, müssen die disjunkten Binärmasken lediglich jeweils mit der gemeinsam genutzten Maske bitweise vereinigt werden. Durch die OpenCV Funktion des Auffindens verbundener Komponenten (connected components) wird anschließend die räumlich längste ausgewählt und der Mittelwert aller nicht-schwarzen Pixel pro Pixelspalte dieser Komponente berechnet. Um möglichem Rauschen zu entgegenwirken wird nach Gaußscher Weichzeichnung (gaussian blur) mit einem Kern von 5x5 Pixel die Positionssequenz jeder getrennten Wertelinie im Diagramm ermittelt.
+Somit können die Wertelinien anhand ihrer Position differenziert werden. Um nun die einzelnen kontinuierlichen Linienwerte zu extrahieren, müssen die disjunkten Binärmasken lediglich jeweils mit der gemeinsam genutzten Maske bitweise vereinigt werden. Durch die OpenCV Funktion des Auffindens verbundener Komponenten (connected components) wird anschließend die räumlich längste ausgewählt und der Mittelwert aller nicht-schwarzen Pixel pro Pixelspalte dieser Komponente berechnet. Um möglichem Rauschen entgegenzuwirken, wird nach Gaußscher Weichzeichnung (gaussian blur) mit einem Kern von 5x5 Pixel die Positionssequenz jeder getrennten Wertelinie im Diagramm ermittelt.
 
-\begin{figure}[h!] % or any other figure positioning (H, h, t, b)
+\begin{figure}[H] % or any other figure positioning (H, h, t, b)
     \centering
     \begin{minipage}{0.315\textwidth} % First figure
         \centering
@@ -223,30 +224,30 @@ Somit können die Wertelinien anhand ihrer Position differenziert werden. Um nun
     \end{minipage}
 \end{figure}
 
-\subsection{Achsenerkennung durch optischer Schriftzeichenerkennung}
+\subsection{Achsenerkennung durch optische Schriftzeichenerkennung}
 
-Der andere Teil der Liniendiagrammsauswertung setzt sich aus optischen Schriftzeichenerkennung zusammen, aus welcher Titel, Linienbezeichnungen und Achsenbeschriftungen (label) ausgearbeitet werden können. Für die Label der Achsen wird außerdem derer Mittelpunktposition im Diagramm für die numerische Tabellenformauswertung verwendet. Bis auf limitierte Ausnahmen befinden sich so alle Datenpunkte, beispielweise bei Diagramme über Jahresentwicklungen, in der Jahresmitte.
+Der andere Teil der Liniendiagrammsauswertung setzt sich aus optischer Schriftzeichenerkennung zusammen, aus welcher Titel, Linienbezeichnungen und Achsenbeschriftungen (label) ausgearbeitet werden können. Für die Label der Achsen wird außerdem deren Mittelpunktposition im Diagramm für die numerische Tabellenformauswertung verwendet. Bis auf limitierte Ausnahmen befinden sich so alle Datenpunkte, beispielsweise bei Diagrammen über Jahresentwicklungen, in der Jahresmitte.
 \\
 Für die optische Schriftzeichenerkennung wurde die JavaScript Bibliothek Chrome Lens OCR \cite{dimden2024chromelensocr} verwendet, während der restliche Algorithmus weiterhin in Python implementiert wurde. Diese OCR-Bibliothek verwendet die im Chromium Browser eingebettete Google Lens OCR und kann ohne weiteren Authentifizierungsprozess genutzt werden, weshalb sich für sie entschieden wurde. Die Brücke zwischen Python und JavaScript erfolgt durch das programmatische Aufrufen des JavaScript Codes über die Konsole in Python, welcher daraufhin von ihr in Textform ausgelesen und verarbeitet werden kann. Zur Verfügung gestellt werden die erkannten Textbezeichnungen selbst, aber auch ihre jeweiligen absoluten und relativen Positionen innerhalb des Diagrammbilds.
 \\
-Nach dem alle erkannten OCR-Labels bereitgestellt wurden, werden diese mithilfe ihrer Mittelpunktpositionen in fünf disjunkte Gruppen eingeteilt: Titel, Linienbezeichnungen, linke Y-Achse, rechte Y-Achse und untere X-Achse.
+Nachdem alle erkannten OCR-Labels bereitgestellt wurden, werden diese mithilfe ihrer Mittelpunktpositionen in fünf disjunkte Gruppen eingeteilt: Titel, Linienbezeichnungen, linke Y-Achse, rechte Y-Achse und untere X-Achse.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/ocr.png}
-    \caption{\hbadness=10000 Zuordnung der erkannten Textbeschriftungen in die fünf disjunkte Gruppen samt ihrer jeweiligen Mittelpunktpositionen}
+    \caption{\hbadness=10000 Zuordnung der erkannten Textbeschriftungen in die fünf disjunkten Gruppen samt ihrer jeweiligen Mittelpunktpositionen}
     \label{fig:ocr}
 \end{figure}
 
-Für die drei Achsenbeschriftungen werden nur jenige Labels untersucht, welche sich auf dem äußeren Rand von 15\% des Bildes befinden. Die horizontale und vertikale Mittelwertposition aller Labels für die drei Achsen wird bestimmt und mit dieser werden mögliche Beschriftungen, welche sich nicht innerhalb 2\% der jeweiligen Mittelwertlinie befinden, aussortiert. Ebenfalls werden alle Beschriftungen unterhalb der erkannten X-Achse, unabhängig dieser vorherigen Einschrenkung, ignoriert. Um mögliche Schriftzeichenerkennungsfehler entgegenzuwirken wird der Text der erkannten Achsenlabels gefiltert. Erkannte Kommas werden in Punkte verwandelt und danach alle Buchstaben und andere Zeichen entfernt, sodass der Text am Ende nur noch aus den Zeichen 0-9, Punkte und Minuszeichen besteht. Diese Entscheidung wurde getroffen um fälschlicherweise miterkannte Einheitsangaben, oder andere OCR-Fehler zu verbessern. Das Aufkommen von falscher OCR bei Ziffern, z.B. die Erkennung von einem B statt einer 8, kam nur sehr selten vor, weshalb dieser Schritt gewählt wurde.
-Um den Diagrammstitel zu extrahieren werden die oberen Labels ausgewählt, die sich in horizontaler Mitte befinden. Für die Wertelinienbeschriftungen werden alle Textbezeichnungen in Auswahl gezogen, welche sich innerhalb des definierten Diagrammsrand befinden. Zur Lösung des aufkommenden Minimum-Distanz-Problems werden in Verbindung mit den getrennten Wertelinienmasken aus dem vorherigen Schritt diese Labels den jeweilig nächsten Linien mithilfe der Ungarischen Methode bestmöglich zugeordnet.
+Für die drei Achsenbeschriftungen werden nur jene Labels untersucht, welche sich auf dem äußeren Rand von 15\% des Bildes befinden. Die horizontale und vertikale Mittelwertposition aller Labels für die drei Achsen wird bestimmt und mit dieser werden mögliche Beschriftungen, welche sich nicht innerhalb 2\% der jeweiligen Mittelwertlinie befinden, aussortiert. Ebenfalls werden alle Beschriftungen unterhalb der erkannten X-Achse, unabhängig dieser vorherigen Einschränkung, ignoriert. Um mögliche Schriftzeichenerkennungsfehler entgegenzuwirken, wird der Text der erkannten Achsenlabels gefiltert. Erkannte Kommas werden in Punkte verwandelt und danach alle Buchstaben und andere Zeichen entfernt, sodass der Text am Ende nur noch aus den Zeichen 0-9, Punkten und Minuszeichen besteht. Diese Entscheidung wurde getroffen, um fälschlicherweise miterkannte Einheitsangaben oder andere OCR-Fehler zu verbessern. Das Aufkommen von falscher OCR bei Ziffern, z.B. die Erkennung von einem B statt einer 8, kam nur sehr selten vor, weshalb dieser Schritt gewählt wurde.
+Um den Diagrammtitel zu extrahieren, werden die oberen Labels ausgewählt, die sich in horizontaler Mitte befinden. Für die Wertelinienbeschriftungen werden alle Textbezeichnungen in Auswahl gezogen, welche sich innerhalb des definierten Diagrammrands befinden. Zur Lösung des aufkommenden Minimum-Distanz-Problems werden in Verbindung mit den getrennten Wertelinienmasken aus dem vorherigen Schritt diese Labels den jeweilig nächsten Linien mithilfe der Ungarischen Methode bestmöglich zugeordnet.
 \clearpage
 \subsection{Grafische Darstellung und tabellarische Auswertung}
 
-Im Anschluss der Wertelinien- und Achsenbeschriftsextraktion kann das zu auswertende Liniendiagramm visualisiert und in Tabellenform ausgewertet werden. Für die grafische Darstellung wurde die Datenvisualisierungsbibliothek Matplotlib \cite{Hunter:2007} verwendet.
+Im Anschluss an die Wertelinien- und Achsenbeschriftungsextraktion kann das zu auswertende Liniendiagramm visualisiert und in Tabellenform ausgewertet werden. Für die grafische Darstellung wurde die Datenvisualisierungsbibliothek Matplotlib \cite{Hunter:2007} verwendet.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/extraction_input2.png}
@@ -254,19 +255,19 @@ Im Anschluss der Wertelinien- und Achsenbeschriftsextraktion kann das zu auswert
     \label{fig:extraction_input}
 \end{figure}
 
-Die extrahierten kontinuierlichen Linienwerte können nach vorherigem Skalieren, basierend auf der Bildgröße des Diagramms durch Matplotlib dargestellt werden. Jeder dieser Linien kann ein Bezeichnung zugeordnet werden, welche in der Legende aufgezählt wird. Zudem kann der Titel des Graphs (plot) gesetzt werden. Die Position der jeweiligen Achsenticks kann, wie vermerkt, durch die Mittelpunktpositionen der einzelnen eingeteilten Achsenbeschriftungen eingestellt werden, sowie deren jeweilige Labels. Pro X-Achsen Label wurde außerdem eine vertikale, gestrichelte Linie visualisert.
+Die extrahierten kontinuierlichen Linienwerte können nach vorherigem Skalieren, basierend auf der Bildgröße des Diagramms, durch Matplotlib dargestellt werden. Jeder dieser Linien kann eine Bezeichnung zugeordnet werden, welche in der Legende aufgezählt wird. Zudem kann der Titel des Graphs (plot) gesetzt werden. Die Position der jeweiligen Achsenticks kann, wie vermerkt, durch die Mittelpunktpositionen der einzelnen eingeteilten Achsenbeschriftungen eingestellt werden, sowie deren jeweilige Labels. Pro X-Achsen Label wurde außerdem eine vertikale, gestrichelte Linie visualisiert.
 
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \captionsetup{width=.75\linewidth}
     \includegraphics[width=.75\textwidth]{Implementation/img/extraction_output2.png}
-    \caption{\hbadness=10000 Durch Matplotlib visualisertes, extrahiertes Liniendiagramm}
+    \caption{\hbadness=10000 Durch Matplotlib visualisiertes, extrahiertes Liniendiagramm}
     \label{fig:extraction_output}
 \end{figure}
 
-Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand. Für jedes Label der X-Achse wird dessen Schnittpunkt einer von ihrem Mittelpunkt aus verlaufenden, vertikalen Linie mit allen Werteliniensequenzen berechnet und der die räumliche Y-Position bestimmt. Anschließend wurde durch linearer Inter- und Extrapolation mithilfe der SciPy \cite{2020SciPy-NMeth} Bibliothek der genaue Y-Wert zwischen den Labelwerten der linken Y-Achse berechnet. Zu notieren ist hier, dass diese lineare Interpolation bei Diagrammen mit beispielsweise logarithmischer Skala zu Evaluationsfehlern führt. Diese Diagrammsform ist jedoch so gering vorkommend, weshalb diese fehlerbehaftete Herangehensweise akzeptabel erscheint. Zu visuellem Zweck wurden diese Schnittpunkte ebenfalls in dem grafisch dargestellten Graph veranschaulicht.
+Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand. Für jedes Label der X-Achse wird dessen Schnittpunkt einer von seinem Mittelpunkt aus verlaufenden, vertikalen Linie mit allen Werteliniensequenzen berechnet und die räumliche Y-Position bestimmt. Anschließend wird durch lineare Inter- und Extrapolation mithilfe der SciPy-Bibliothek \cite{2020SciPy-NMeth} der genaue Y-Wert zwischen den Labelwerten der linken Y-Achse berechnet. Zu notieren ist hier, dass diese lineare Interpolation bei Diagrammen mit beispielsweise logarithmischer Skala zu Evaluationsfehlern führt. Diese Diagrammform ist jedoch so selten vorkommend, dass diese fehlerbehaftete Herangehensweise akzeptabel erscheint. Zu visuellen Zwecken wurden diese Schnittpunkte ebenfalls in dem grafisch dargestellten Graphen veranschaulicht.
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{|l|l|l|l|l|l|}
         \hline
@@ -276,5 +277,5 @@ Die eigentliche numerische Auswertung erfolgt nun ohne weiteren großen Aufwand.
         Reale Entwicklung    & 7.12 & 8.08  & 5.29  & 4.53 & 2.70 \\ \hline
         Preisentwicklung     & 1.23 & 2.91  & 4.32  & 4.14 & 1.94 \\ \hline
     \end{tabular}
-    \caption{Ausgewertetes Liniendiagrammen in Tabellenform}
+    \caption{In Tabellenform ausgewertetes Liniendiagramm}
 \end{table}
