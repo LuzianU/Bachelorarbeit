@@ -227,7 +227,7 @@ Die unrealisierbare korrekte Erkennung der schweren Liniendiagrammen ist hier ka
             Korrekt & 21       & 18       & 0       \\ \hline
             Falsch  & 1        & 10       & 13      \\ \hline
         \end{tabular}
-        \caption{Korrekte Linienfortführung \phantom{Platzhalter}}
+        \caption{Ergebnisse der Evaluation korrekter Linienfortführung}
     \end{minipage}%
     \hfill
     \begin{minipage}{0.475\textwidth}
@@ -239,7 +239,7 @@ Die unrealisierbare korrekte Erkennung der schweren Liniendiagrammen ist hier ka
             Korrekt & 17       & 10       & 0       \\ \hline
             Falsch  & 5        & 18       & 13      \\ \hline
         \end{tabular}
-        \caption{Davon Linienanzahl richtig erkannt}
+        \caption{Evaluierung von davon richtig erkannter Linienanzahl}
     \end{minipage}
 \end{table}
 
@@ -264,7 +264,7 @@ Alle im Folgenden dargestellten Ergebnisse wurden auf demselben Validierungsdate
     \end{minipage}%
 \end{table}
 
-Die Tauglichkeit dieser künstlichen Herangehensweise zum lediglichen Vortrainieren spiegelt sich jedoch in den unteren Tabellen wider. Besonders der Precision-Wert zwischen vor- und nicht vortrainierten Modellen zeigt Verbesserungen, hier in beiden Fällen von fast 1.5\%. Recall scheint davon nicht ganz betroffen zu sein; die Verbesserungen bei dem einen und Verschlechterungen bei dem anderen können allerdings den Zufälligkeitsfaktoren des Trainings verschuldet sein. Die gleichen Auffälligkeiten können im Fall des Batch-Padding gefunden werden.
+Die Tauglichkeit dieser künstlichen Herangehensweise zum lediglichen Vortrainieren spiegelt sich jedoch in den unteren Tabellen wider. Besonders der Precision-Wert zwischen vor- und nicht vortrainierten Modellen zeigt Verbesserungen, hier in beiden Fällen von fast 1.5\%. Recall scheint davon nicht ganz betroffen zu sein; die Verbesserungen bei dem einen und Verschlechterungen bei dem anderen können allerdings den Zufälligkeitsfaktoren des Trainings verschuldet sein. Die gleichen Auffälligkeiten können im Fall des Batch-Paddings gefunden werden.
 
 \begin{table}[H]
     \centering
@@ -354,7 +354,7 @@ Es wurden 53 zufällige Diagramme manuell evaluiert, bei denen insgesamt 26 davo
 
 Letztendlich wurde der kombinierte und gesamte Tabellenformextraktionsalgorithmus evaluiert. Da der Algorithmus jedoch mit einigen Einschränkungen entworfen und seine einzigen Komponenten bereits oben in \ref{ch:eval_unet} und \ref{ch:eval_ocr} ausgewertet wurden, wurden einige Entscheidungen für die Algorithmusevaluation getroffen. Es soll die Effizienz des Algorithmus selbst bewertet werden, Fehler, die aufgrund von nicht ausgelegten Problemen entstehen, werden nicht in die Evaluation miteinbezogen. Folgende Annahmen wurden vorausgesetzt:
 \\
-Inkorrektheiten, verursacht durch die primitive Wertelinientrennung, bleiben unbeachtet, Fehler und Folgefehler der in \ref{ch:eval_ocr} beschriebenen optischen Schriftzeichenerkennung werden ignoriert und die Bewertung wird unabhängig des korrekten Linientitels der Legende durchgeführt. Außerdem werden alle Werte anhand der Mitte des jeweiligen X-Achsen-Labels abgelesen und nicht, wie korrekt, am eigentlichen respektiven Jahresende.
+Inkorrektheiten, verursacht durch die primitive Wertelinientrennung, bleiben unbeachtet, Fehler und Folgefehler der in \ref{ch:eval_ocr} beschriebenen optischen Schriftzeichenerkennungskategorie werden ignoriert und die Bewertung wird unabhängig des korrekten Linientitels der Legende durchgeführt. Außerdem werden alle Werte anhand der Mitte des jeweiligen X-Achsen-Labels abgelesen und nicht, wie korrekt, am eigentlichen respektiven Jahresende.
 \\
 Fehler werden durch den in \ref{ch:eval_ocr} genannten, fehlerhaften Achsenerkennungsalgorithmus gezählt, sowie bei falscher Y-Wert-Auswertung, die möglicherweise durch falsche Interpolation der Y-Achse bei Diagrammen mit beispielsweise logarithmischer Skala auftreten kann. Des Weiteren werden Fehler bei der falschen Werteliniensegmentation bestimmt, wie etwa beim Auftreten von Lücken oder irrtümlicher Erkennung in der Segmentierungsmaske.
 \\

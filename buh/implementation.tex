@@ -94,7 +94,7 @@ Als Alternative zur Instanzsegmentation wurde ebenfalls die semantische Segmenta
 Implementiert wurde die Datenvorverarbeitung, das Modelltraining und die Evaluation mithilfe der Keras 3 API \cite{chollet2015keras}. Für die Augmentierung der Trainingsdaten wurde die Bibliothek Albumentations \cite{info11020125} genutzt. Lediglich der Code der U-Net Architektur selbst wurde in Form des Vanilla U-Nets \cite{zak2024kerasunet} übernommen.
 \\
 Der Ablauf des U-Net Trainings durchlief wie folgt:
-Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelesen. Im Fall der Binärmasken wurde der Schwellenwert (threshold) von 30\% genutzt. Nach der Deklaration der Modellarchitektur wurde die Datenaugmentation definiert. Folgende Augmentierungstechniken wurden verwendet:
+Zuerst wurde der Datensatz mithilfe verfügbarer Bibliotheksfunktionen eingelesen. Im Fall der Binärmasken wurde der Schwellenwert (threshold) der einzelnen Pixel von 30\% genutzt. Nach der Deklaration der Modellarchitektur wurde die Datenaugmentation definiert. Folgende Augmentierungstechniken wurden verwendet:
 
 \begin{itemize}[itemsep=0pt, topsep=0pt]
     \item Spiegeln entlang der horizontalen Achse (\texttt{A.HorizontalFlip}, \texttt{p=0.5})
