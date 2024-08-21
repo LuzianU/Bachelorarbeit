@@ -1,0 +1,85 @@
+\documentclass{thesis}
+\input{preamble}
+% for german language type 'ngernman' as option for babel package in in preamble.tex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% PDF SETTINGS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\hypersetup{
+ pdfauthor={Luzian Uihlein},
+ pdftitle={Extraktion von Diagrammen aus Texten und Auswertung von Liniendiagrammen mit Deep-Learning Methoden},
+ pdfsubject={Not set},
+ pdfkeywords={Not set}
+}
+\hypersetup{hidelinks} % hides boxes around hyperlinks uncomment this with ctrl+shift+7
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEGIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+
+
+\include{titlepage}
+\include{abstract}
+
+\renewcommand{\baselinestretch}{1} % decrease line spacing
+\tableofcontents
+\renewcommand{\baselinestretch}{1.2}
+
+\normalsize
+
+\include{Einleitung/einleitung}
+\include{Literaturübersicht/literaturübersicht}
+\include{Methodik/methodik}
+\include{Implementation/implementation}
+\include{Experimente/experimente}
+\include{Zusammenfassung/zusammenfassung}
+
+\appendix
+
+\bibliographystyle{unsrt}
+\bibliography{refs}
+
+\include{originality}
+% \let\clearpage\relax
+
+
+%table of figures
+%\clearpage
+%\listoffigures
+%\clearpage
+
+%empty page 
+% \thispagestyle{empty}
+% \cleardoublepage
+
+\phantom{
+    \cite{P2023LineEXDE}
+    \cite{lee2023matgdmaterialsgraphdigitizer}
+    \cite{inproceedings}
+    \cite{9423395}
+    \cite{parsingimages}
+    \cite{li2020docbank}
+    \cite{CVAT_ai_Corporation_Computer_Vision_Annotation_2023}
+    \cite{photopea}
+    \cite{Jocher_Ultralytics_YOLO_2023}
+    \cite{ronneberger2015unetconvolutionalnetworksbiomedical}
+    \cite{redmon2016lookonceunifiedrealtime}
+    \cite{lin2015microsoftcococommonobjects}
+    \cite{dwyer2024roboflow}
+    \cite{chollet2015keras}
+    \cite{info11020125}
+    \cite{opencv_library}
+    \cite{zak2024kerasunet}
+    \cite{kingma2017adammethodstochasticoptimization}
+    \cite{dimden2024chromelensocr}
+    \cite{Hunter:2007}
+    \cite{2020SciPy-NMeth}
+    \cite{DamianoP2024confusionMatrixGenerator}
+}
+
+\end{document}
+
+

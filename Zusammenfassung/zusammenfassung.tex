@@ -1,2 +1,10 @@
 \chapter{Zusammenfassung}
 \label{ch:zusammenfassung}
+
+In dieser Arbeit wurde sich mit der Entwicklung und Evaluation eines Systems zur Massenextraktion verschiedener Diagramme in Texten und Auswertung von Liniendiagrammen aus historischen Wirtschaftsmagazinen beschäftigt. Hierfür wurde eine Kombination unterschiedlicher Deep-Learning-Techniken und traditioneller Bildbearbeitungsmethoden implementiert.
+\\
+Die experimentellen Ergebnisse zeigen, dass die gewählten Modelle vielversprechend für die automatische Extraktion und Klassifikation diverser Diagrammarten sind. Die semantische Segmentation der Wertelinien von Liniendiagrammen erwies sich als robuster im Vergleich zur Instanzsegmentation mit Ultralytics YOLO, insbesondere bei der korrekten Erkennung aller vorliegenden Wertelinien. Die Vereinigung der Segmentierungsergebnisse mit optischer Schriftzeichenerkennung für die Achsenbestimmung ermöglichte die grafische Darstellung und numerische Auswertung in Tabellenform.
+\\
+Allerdings gibt es auch Limitationen, die in zukünftigen Arbeiten weiter ausgearbeitet werden können. Durch das Wegfallen der Linieninstanzerkennung bei semantischer Segmentation wurde ein simpler Linientrennungsalgorithmus entwickelt, welcher bei komplexeren, insbesondere bei sich überlappenden Linien von Diagrammen zu Fehlern führt. Hierfür könnten Kombinationen aus semantischer und Instanzsegmentation oder sogar ganz andere erforschte fortschrittlichere Liniennachzeichnungs- oder Gruppierungsalgorithmen zu verbesserten Ergebnissen führen. Zudem ist die vorgeschlagene Methode stark von der Qualität der optischen Schriftzeichenerkennung abhängig, weshalb hierfür verschiedene OCR-Bibliotheken oder auf historischen Dokumenten spezialisiert trainierte OCR-Modelle evaluiert werden könnten.
+\\
+Insgesamt bieten die entwickelten Methoden eine solide Grundlage für die weitere Forschung im Bereich der automatisierten Diagrammerkennung und -auswertung. Zukünftige Arbeiten könnten sich ebenfalls auf die Generalisierbarkeit dieser Methoden auf andere Diagrammarten konzentrieren.
